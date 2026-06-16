@@ -1,63 +1,123 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>SportMax - Clientes</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPORT+ | Clientes</title>
 <link rel="stylesheet" href="estilo.css">
 </head>
+
 <body>
 
 <nav>
-    <a href="index.html">Home</a>
-    <a href="clientes.html">Clientes</a>
-    <a href="produtos.html">Produtos</a>
-    <a href="vendas.html">Vendas</a>
-    <a href="consulta_vendas.html">Consultar Vendas</a>
+    <a href="index.html">🏠 Home</a>
+    <a href="clientes.html">👥 Clientes</a>
+    <a href="produtos.html">📦 Produtos</a>
+    <a href="vendas.html">🛒 Vendas</a>
+    <a href="consulta_vendas.html">📊 Consultas</a>
 </nav>
 
 <header class="banner">
-    <h1>Cadastro de Clientes</h1>
-    <p>Gerencie seus clientes</p>
+    <h1>👥 Gestão de Clientes</h1>
+    <p>Cadastre e gerencie os clientes da SPORT+</p>
 </header>
 
 <div class="container">
 
+    <!-- CADASTRO -->
+
     <div class="card">
+
         <h2>Novo Cliente</h2>
 
         <form action="/salvar-cliente" method="POST">
 
-            <label>Nome</label>
-            <input type="text" name="nome" required>
+            <label>Nome Completo</label>
+            <input
+                type="text"
+                name="nome"
+                placeholder="Digite o nome completo"
+                required
+            >
 
             <label>CPF</label>
-            <input type="text" name="cpf" required>
+            <input
+                type="text"
+                name="cpf"
+                placeholder="000.000.000-00"
+                required
+            >
 
             <label>Telefone</label>
-            <input type="text" name="telefone" required>
+            <input
+                type="text"
+                name="telefone"
+                placeholder="(00) 00000-0000"
+                required
+            >
 
             <button type="submit">
-                Salvar Cliente
+                ➕ Salvar Cliente
             </button>
 
         </form>
+
     </div>
+
+    <!-- PESQUISA -->
 
     <div class="card">
 
-        <h2>Clientes Cadastrados</h2>
+        <h2>🔍 Pesquisa</h2>
+
+        <input
+            type="text"
+            id="campoBusca"
+            placeholder="Digite o nome do cliente..."
+        >
+
+        <br><br>
+
+        <button onclick="carregarClientes()">
+            🔄 Atualizar Lista
+        </button>
+
+    </div>
+
+    <!-- ESTATÍSTICAS -->
+
+    <div class="card">
+
+        <h2>📈 Estatísticas</h2>
+
+        <p>
+            Total de clientes cadastrados:
+            <strong id="totalClientes">0</strong>
+        </p>
+
+    </div>
+
+    <!-- LISTA -->
+
+    <div class="card">
+
+        <h2>📋 Clientes Cadastrados</h2>
 
         <table>
 
             <thead>
+
                 <tr>
+                    <th>ID</th>
                     <th>Nome</th>
                     <th>CPF</th>
                     <th>Telefone</th>
                 </tr>
+
             </thead>
 
-            <tbody id="lista-clientes">
+            <tbody id="listaClientes">
+
             </tbody>
 
         </table>
@@ -66,33 +126,130 @@
 
 </div>
 
+<footer class="rodape">
+
+    <p>© 2026 SPORT+ - Loja Esportiva</p>
+    <p>Sistema de Gerenciamento de Clientes</p>
+
+</footer>
+
 <script>
 
-fetch('/listar-clientes')
-.then(res => res.json())
-.then(clientes => {
+const tabela =
+document.getElementById(
+    "listaClientes"
+);
 
-    const tabela =
-    document.getElementById('lista-clientes');
+const totalClientes =
+document.getElementById(
+    "totalClientes"
+);
+
+function formatarCPF(cpf){
+
+    return cpf;
+
+}
+
+function formatarTelefone(tel){
+
+    return tel;
+
+}
+
+function renderizar(clientes){
+
+    tabela.innerHTML = "";
+
+    totalClientes.innerHTML =
+    clientes.length;
 
     clientes.forEach(cliente => {
 
         tabela.innerHTML += `
-        <tr>
-            <td>${cliente.nome}</td>
-            <td>${cliente.cpf}</td>
-            <td>${cliente.telefone}</td>
-        </tr>
+            <tr>
+                <td>${cliente.id}</td>
+
+                <td>
+                    <strong>
+                        ${cliente.nome}
+                    </strong>
+                </td>
+
+                <td>
+                    ${formatarCPF(cliente.cpf)}
+                </td>
+
+                <td>
+                    ${formatarTelefone(cliente.telefone)}
+                </td>
+
+            </tr>
         `;
+
+    });
+
+}
+
+function carregarClientes(){
+
+    fetch('/listar-clientes')
+
+    .then(res => res.json())
+
+    .then(clientes => {
+
+        renderizar(clientes);
+
+    })
+
+    .catch(() => {
+
+        alert(
+            'Erro ao carregar clientes.'
+        );
+
+    });
+
+}
+
+carregarClientes();
+
+document
+.getElementById(
+    'campoBusca'
+)
+
+.addEventListener(
+'keyup',
+
+function(){
+
+    const texto =
+    this.value.trim();
+
+    if(texto === ''){
+
+        carregarClientes();
+        return;
+
+    }
+
+    fetch(
+        `/buscar-clientes/${texto}`
+    )
+
+    .then(res => res.json())
+
+    .then(clientes => {
+
+        renderizar(clientes);
+
     });
 
 });
 
 </script>
-
-<footer class="rodape">
-    <p>© 2026 SportMax</p>
-</footer>
 
 </body>
 </html>
