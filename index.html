@@ -1,291 +1,67 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arena Sport - Loja Esportiva</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Impact&display=swap');
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e2937 100%);
-            color: #fff;
-            line-height: 1.6;
-        }
-        
-        header {
-            background: rgba(0, 0, 0, 0.9);
-            padding: 1rem 0;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 3px solid #22c55e;
-        }
-        
-        nav {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 2rem;
-        }
-        
-        .logo {
-            font-family: 'Impact', sans-serif;
-            font-size: 2.2rem;
-            color: #22c55e;
-            text-shadow: 0 0 10px #22c55e;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-        
-        .nav-links a {
-            color: #fff;
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s;
-        }
-        
-        .nav-links a:hover {
-            color: #22c55e;
-        }
-        
-        .hero {
-            height: 100vh;
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://source.unsplash.com/random/1920x1080/?sports') center/cover no-repeat;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            margin-top: 70px;
-        }
-        
-        .hero-content {
-            max-width: 800px;
-            padding: 2rem;
-        }
-        
-        .hero h1 {
-            font-size: 4.5rem;
-            margin-bottom: 1rem;
-            color: #fff;
-        }
-        
-        .hero p {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .btn {
-            background: #22c55e;
-            color: #000;
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .btn:hover {
-            background: #86efac;
-            transform: scale(1.05);
-        }
-        
-        .products {
-            max-width: 1200px;
-            margin: 4rem auto;
-            padding: 0 2rem;
-        }
-        
-        .section-title {
-            text-align: center;
-            font-size: 2.8rem;
-            margin-bottom: 3rem;
-            color: #22c55e;
-        }
-        
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-        }
-        
-        .product-card {
-            background: #1e2937;
-            border-radius: 15px;
-            overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        
-        .product-card:hover {
-            transform: translateY(-15px);
-            box-shadow: 0 20px 40px rgba(34, 197, 94, 0.3);
-        }
-        
-        .product-card img {
-            width: 100%;
-            height: 220px;
-            object-fit: cover;
-        }
-        
-        .product-info {
-            padding: 1.5rem;
-        }
-        
-        .product-info h3 {
-            color: #22c55e;
-            margin-bottom: 0.5rem;
-        }
-        
-        .price {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #86efac;
-            margin: 1rem 0;
-        }
-        
-        .add-to-cart {
-            width: 100%;
-            background: #eab308;
-            color: #000;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        
-        footer {
-            background: #0f172a;
-            padding: 3rem 0;
-            text-align: center;
-        }
-        
-        .cart {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #22c55e;
-            color: #000;
-            padding: 15px 25px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: bold;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="estilo.css">
+  <title>SisSport - Loja de Esportes</title>
 </head>
 <body>
-    <header>
-        <nav>
-            <div class="logo">ARENA SPORT</div>
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#produtos">Produtos</a></li>
-                <li><a href="#sobre">Sobre</a></li>
-                <li><a href="#contato">Contato</a></li>
-            </ul>
-        </nav>
-    </header>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="clientes.html">Clientes</a>
+    <a href="produtos.html">Produtos</a>
+    <a href="vendas.html">Vendas</a>
+    <a href="consulta_vendas.html">Histórico de Vendas</a>
+  </nav>
 
-    <section class="hero" id="home">
-        <div class="hero-content">
-            <h1>SEJA IMBATÍVEL</h1>
-            <p>Os melhores equipamentos esportivos com qualidade premium e preços imbatíveis.</p>
-            <button class="btn" onclick="document.getElementById('produtos').scrollIntoView({behavior: 'smooth'})">Ver Produtos</button>
-        </div>
-    </section>
+  <header class="banner">
+    <h1>SisSport</h1>
+    <p>Loja de Esportes - Gestão Completa</p>
+    <img src="https://via.placeholder.com/800x300/132960/FFFFFF?text=SISSPORT+LOJA+DE+ESPORTES" alt="Banner SisSport" width="800">
+  </header>
 
-    <section class="products" id="produtos">
-        <h2 class="section-title">Nossos Destaques</h2>
-        <div class="product-grid">
-            <!-- Products will be populated by JS -->
-        </div>
-    </section>
-
-    <footer>
-        <p>&copy; 2026 Arena Sport - Todos os direitos reservados.</p>
-        <p>Loja Esportiva Online - Entrega para todo Brasil</p>
-    </footer>
-
-    <div class="cart" onclick="alert('Carrinho em desenvolvimento!')">
-        🛒 Carrinho (<span id="cart-count">0</span>)
+  <div class="container">
+    <div class="card">
+      <h1>Bem-vindo ao SisSport 🏆</h1>
+      <p>Plataforma completa para gerenciar sua loja de artigos esportivos: clientes, produtos, vendas e histórico.</p>
     </div>
 
-    <script>
-        // Sample sports products
-        const products = [
-            {
-                id: 1,
-                name: "Camisa Corinthians 2026",
-                price: 189.90,
-                image: "https://source.unsplash.com/random/300x300/?soccer,jersey"
-            },
-            {
-                id: 2,
-                name: "Tênis Nike Air Max",
-                price: 429.90,
-                image: "https://source.unsplash.com/random/300x300/?sneakers"
-            },
-            {
-                id: 3,
-                name: "Bola Adidas Champions",
-                price: 149.90,
-                image: "https://source.unsplash.com/random/300x300/?soccerball"
-            },
-            {
-                id: 4,
-                name: "Shorts de Corrida",
-                price: 89.90,
-                image: "https://source.unsplash.com/random/300x300/?running"
-            }
-        ];
+    <div class="card" style="margin-top: 20px;">
+      <h3>🏪 Módulos do Sistema</h3>
+      <table border="1" style="width:100%; border-collapse: collapse; margin-top: 10px;">
+        <thead>
+          <tr style="background-color: #eee;">
+            <th>Módulo</th>
+            <th>Descrição</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>👥 <strong>Clientes</strong></td>
+            <td>Cadastro e gerenciamento de clientes da loja</td>
+          </tr>
+          <tr>
+            <td>⚽ <strong>Produtos</strong></td>
+            <td>Catálogo de produtos esportivos (bolas, roupas, tênis, etc)</td>
+          </tr>
+          <tr>
+            <td>🛒 <strong>Vendas</strong></td>
+            <td>Realizar vendas com carrinho e baixa de estoque</td>
+          </tr>
+          <tr>
+            <td>📊 <strong>Histórico</strong></td>
+            <td>Consulta de todas as vendas realizadas</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-        function renderProducts() {
-            const grid = document.querySelector('.product-grid');
-            grid.innerHTML = '';
-            
-            products.forEach(product => {
-                const card = document.createElement('div');
-                card.className = 'product-card';
-                card.innerHTML = `
-                    <img src="${product.image}" alt="${product.name}">
-                    <div class="product-info">
-                        <h3>${product.name}</h3>
-                        <div class="price">R$ ${product.price.toFixed(2)}</div>
-                        <button class="add-to-cart" onclick="addToCart(${product.id})">Adicionar ao Carrinho</button>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        let cart = [];
-
-        function addToCart(id) {
-            const product = products.find(p => p.id === id);
-            cart.push(product);
-            document.getElementById('cart-count').textContent = cart.length;
-            alert(`${product.name} adicionado ao carrinho!`);
-        }
-
-        // Initialize
-        window.onload = renderProducts;
-    </script>
+  <footer class="rodape">
+    <div class="container-rodape">
+      <p>&copy; 2026 SisSport - Loja de Esportes</p>
+      <p>Desenvolvido para fins didáticos</p>
+    </div>
+  </footer>
 </body>
 </html>
