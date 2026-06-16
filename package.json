@@ -1,0 +1,14 @@
+{
+  "name": "sisport-loja-esportes",
+  "version": "1.0.0",
+  "description": "Sistema de Gestão para Loja de Esportes",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "sqlite3": "^5.1.7",
+    "body-parser": "^1.20.3"
+  }
+}
