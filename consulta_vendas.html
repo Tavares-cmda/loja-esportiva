@@ -1,147 +1,337 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>SportMax - Consulta de Vendas</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPORT+ | Consulta de Vendas</title>
 <link rel="stylesheet" href="estilo.css">
 </head>
+
 <body>
 
 <nav>
-    <a href="index.html">Home</a>
-    <a href="clientes.html">Clientes</a>
-    <a href="produtos.html">Produtos</a>
-    <a href="vendas.html">Vendas</a>
-    <a href="consulta_vendas.html">Consultar Vendas</a>
+    <a href="index.html">🏠 Home</a>
+    <a href="clientes.html">👥 Clientes</a>
+    <a href="produtos.html">📦 Produtos</a>
+    <a href="vendas.html">🛒 Vendas</a>
+    <a href="consulta_vendas.html">📊 Consultas</a>
 </nav>
 
 <header class="banner">
-    <h1>Histórico de Vendas</h1>
-    <p>Consulta completa das vendas realizadas</p>
+    <h1>📊 Histórico de Vendas</h1>
+    <p>Consulte todas as vendas realizadas na SPORT+</p>
 </header>
 
 <div class="container">
 
-<div class="card">
+    <!-- RESUMO -->
 
-<h2>Vendas Registradas</h2>
+    <div class="card">
 
-<table>
+        <h2>📈 Resumo Geral</h2>
 
-<thead>
-<tr>
-<th>ID</th>
-<th>Data</th>
-<th>Cliente</th>
-<th>Total</th>
-<th>Ação</th>
-</tr>
-</thead>
+        <p>
+            Total de vendas:
+            <strong id="totalVendas">0</strong>
+        </p>
 
-<tbody id="lista-vendas">
-</tbody>
+        <p>
+            Faturamento:
+            <strong id="faturamento">
+                R$ 0,00
+            </strong>
+        </p>
 
-</table>
+    </div>
+
+    <!-- PESQUISA -->
+
+    <div class="card">
+
+        <h2>🔍 Buscar Cliente</h2>
+
+        <input
+            type="text"
+            id="campoBusca"
+            placeholder="Digite o nome do cliente..."
+        >
+
+        <br><br>
+
+        <button onclick="carregarVendas()">
+            🔄 Atualizar
+        </button>
+
+    </div>
+
+    <!-- TABELA -->
+
+    <div class="card">
+
+        <h2>📋 Vendas Realizadas</h2>
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    <th>Data</th>
+                    <th>Total</th>
+                    <th>Detalhes</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="listaVendas">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- DETALHES -->
+
+    <div class="card">
+
+        <h2>🛒 Itens da Venda</h2>
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Produto</th>
+                    <th>Quantidade</th>
+                    <th>Preço Unitário</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="detalhesVenda">
+
+            </tbody>
+
+        </table>
+
+    </div>
 
 </div>
 
-<div class="card" id="detalhes" style="display:none;">
-
-<h2>Detalhes da Venda</h2>
-
-<table>
-
-<thead>
-<tr>
-<th>Produto</th>
-<th>Quantidade</th>
-<th>Preço Unitário</th>
-</tr>
-</thead>
-
-<tbody id="itens-venda">
-</tbody>
-
-</table>
-
-</div>
-
-</div>
+<footer class="rodape">
+    <p>© 2026 SPORT+ - Loja Esportiva</p>
+    <p>Sistema de Relatórios e Consultas</p>
+</footer>
 
 <script>
 
-fetch('/listar-vendas')
-
-.then(res => res.json())
-
-.then(vendas => {
-
 const tabela =
-document.getElementById('lista-vendas');
+document.getElementById(
+    'listaVendas'
+);
 
-vendas.forEach(venda => {
+const detalhes =
+document.getElementById(
+    'detalhesVenda'
+);
 
-tabela.innerHTML += `
-<tr>
-<td>${venda.id}</td>
-<td>${venda.data}</td>
-<td>${venda.nome_cliente}</td>
-<td>R$ ${venda.total}</td>
-<td>
-<button onclick="verDetalhes(${venda.id})">
-Ver
-</button>
-</td>
-</tr>
-`;
+const totalVendas =
+document.getElementById(
+    'totalVendas'
+);
 
-});
+const faturamento =
+document.getElementById(
+    'faturamento'
+);
 
-});
+function carregarVendas(){
 
-function verDetalhes(id){
+    fetch('/listar-vendas')
 
-fetch(`/detalhes-venda/${id}`)
+    .then(res => res.json())
 
-.then(res => res.json())
+    .then(vendas => {
 
-.then(itens => {
+        tabela.innerHTML = '';
 
-document.getElementById('detalhes').style.display =
-'block';
+        let total = 0;
 
-const tabela =
-document.getElementById('itens-venda');
+        totalVendas.innerHTML =
+        vendas.length;
 
-tabela.innerHTML = '';
+        vendas.forEach(venda => {
 
-itens.forEach(item => {
+            total +=
+            Number(venda.total);
 
-tabela.innerHTML += `
-<tr>
-<td>${item.nome}</td>
-<td>${item.quantidade}</td>
-<td>R$ ${item.preco_unitario}</td>
-</tr>
-`;
+            tabela.innerHTML += `
+            <tr>
 
-});
+                <td>${venda.id}</td>
 
-window.scrollTo({
-top:
-document.getElementById('detalhes').offsetTop,
-behavior:'smooth'
-});
+                <td>
+                    ${venda.nome_cliente}
+                </td>
 
-});
+                <td>
+                    ${venda.data}
+                </td>
+
+                <td>
+                    R$ ${Number(venda.total)
+                    .toFixed(2)}
+                </td>
+
+                <td>
+
+                    <button
+                    onclick="verDetalhes(${venda.id})">
+
+                    👁️ Ver
+
+                    </button>
+
+                </td>
+
+            </tr>
+            `;
+
+        });
+
+        faturamento.innerHTML =
+        `R$ ${total.toFixed(2)}`;
+
+    });
 
 }
 
-</script>
+function verDetalhes(id){
 
-<footer class="rodape">
-<p>© 2026 SportMax</p>
-</footer>
+    fetch(
+        `/detalhes-venda/${id}`
+    )
+
+    .then(res => res.json())
+
+    .then(itens => {
+
+        detalhes.innerHTML = '';
+
+        itens.forEach(item => {
+
+            detalhes.innerHTML += `
+            <tr>
+
+                <td>
+                    ${item.nome}
+                </td>
+
+                <td>
+                    ${item.quantidade}
+                </td>
+
+                <td>
+                    R$ ${Number(
+                    item.preco_unitario
+                    ).toFixed(2)}
+                </td>
+
+            </tr>
+            `;
+
+        });
+
+    });
+
+}
+
+carregarVendas();
+
+document
+.getElementById(
+'campoBusca'
+)
+
+.addEventListener(
+'keyup',
+
+function(){
+
+    const texto =
+    this.value.trim();
+
+    if(texto === ''){
+
+        carregarVendas();
+        return;
+
+    }
+
+    fetch(
+        `/buscar-vendas/${texto}`
+    )
+
+    .then(res => res.json())
+
+    .then(vendas => {
+
+        tabela.innerHTML = '';
+
+        let total = 0;
+
+        totalVendas.innerHTML =
+        vendas.length;
+
+        vendas.forEach(venda => {
+
+            total +=
+            Number(venda.total);
+
+            tabela.innerHTML += `
+            <tr>
+
+                <td>${venda.id}</td>
+
+                <td>
+                    ${venda.nome_cliente}
+                </td>
+
+                <td>
+                    ${venda.data}
+                </td>
+
+                <td>
+                    R$ ${Number(venda.total)
+                    .toFixed(2)}
+                </td>
+
+                <td>
+
+                    <button
+                    onclick="verDetalhes(${venda.id})">
+
+                    👁️ Ver
+
+                    </button>
+
+                </td>
+
+            </tr>
+            `;
+
+        });
+
+        faturamento.innerHTML =
+        `R$ ${total.toFixed(2)}`;
+
+    });
+
+});
+
+</script>
 
 </body>
 </html>
