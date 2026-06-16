@@ -8,168 +8,184 @@
 </head>
 <body>
 
-    <nav>
-        <a href="index.html">HOME</a>
-        <a href="clientes.html">CLIENTES</a>
-        <a href="produtos.html">PRODUTOS</a>
-        <a href="vendas.html">VENDAS</a>
-        <a href="consulta_vendas.html">CONSULTAS</a>
-    </nav>
+<nav>
+    <a href="index.html">HOME</a>
+    <a href="clientes.html">CLIENTES</a>
+    <a href="produtos.html">PRODUTOS</a>
+    <a href="vendas.html">VENDAS</a>
+    <a href="consulta_vendas.html">CONSULTAS</a>
+</nav>
 
-    <header class="banner">
-        <h1>🏆 SPORT+</h1>
-        <p>Vista sua paixão pelo esporte!</p>
-    </header>
+<header class="banner">
+    <h1>🏆 SPORT+</h1>
+    <p>Vista sua paixão pelo esporte!</p>
+</header>
 
-    <main class="container">
+<div class="container">
 
-        <section class="card">
-            <h2>Bem-vindo à SPORT+</h2>
+    <div class="card">
+        <h2>📊 Dashboard</h2>
 
-            <p>
-                A SPORT+ é uma loja esportiva especializada em artigos para
-                futebol, basquete, corrida, academia e diversas modalidades.
-                Nosso sistema permite gerenciar clientes, produtos, vendas
-                e estoque de forma simples, rápida e organizada.
-            </p>
+        <div class="categorias">
 
-            <br>
-
-            <button>COMPRE AGORA</button>
-        </section>
-
-        <section class="card">
-            <h2>⚽ Categorias</h2>
-
-            <div class="categorias">
-
-                <div class="categoria">
-                    <span>⚽</span>
-                    <h3>Futebol</h3>
-                    <p>Bolas, chuteiras e uniformes.</p>
-                </div>
-
-                <div class="categoria">
-                    <span>🏀</span>
-                    <h3>Basquete</h3>
-                    <p>Bolas, tênis e acessórios.</p>
-                </div>
-
-                <div class="categoria">
-                    <span>🏃</span>
-                    <h3>Corrida</h3>
-                    <p>Tênis e roupas esportivas.</p>
-                </div>
-
-                <div class="categoria">
-                    <span>🏋️</span>
-                    <h3>Academia</h3>
-                    <p>Equipamentos e vestuário fitness.</p>
-                </div>
-
-                <div class="categoria">
-                    <span>👟</span>
-                    <h3>Tênis</h3>
-                    <p>Modelos para todas as modalidades.</p>
-                </div>
-
+            <div class="categoria">
+                <span>👥</span>
+                <h3 id="clientes">0</h3>
+                <p>Clientes</p>
             </div>
-        </section>
 
-        <section class="card">
-            <h2>🔥 Produtos em Destaque</h2>
+            <div class="categoria">
+                <span>📦</span>
+                <h3 id="produtos">0</h3>
+                <p>Produtos</p>
+            </div>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Produto</th>
-                        <th>Categoria</th>
-                        <th>Preço</th>
-                    </tr>
-                </thead>
+            <div class="categoria">
+                <span>💰</span>
+                <h3 id="vendas">0</h3>
+                <p>Vendas</p>
+            </div>
 
-                <tbody>
-                    <tr>
-                        <td>Chuteira Profissional</td>
-                        <td>Futebol</td>
-                        <td>R$ 299,90</td>
-                    </tr>
+            <div class="categoria">
+                <span>🏆</span>
+                <h3 id="mais-vendido">-</h3>
+                <p>Mais Vendido</p>
+            </div>
 
-                    <tr>
-                        <td>Bola Oficial</td>
-                        <td>Futebol</td>
-                        <td>R$ 149,90</td>
-                    </tr>
+        </div>
+    </div>
 
-                    <tr>
-                        <td>Tênis Running</td>
-                        <td>Corrida</td>
-                        <td>R$ 349,90</td>
-                    </tr>
+    <div class="card">
+        <h2>🏪 Bem-vindo à SPORT+</h2>
 
-                    <tr>
-                        <td>Camisa Esportiva</td>
-                        <td>Academia</td>
-                        <td>R$ 89,90</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
+        <p>
+            Sistema completo para gerenciamento de clientes,
+            produtos esportivos, estoque e vendas.
+        </p>
 
-        <section class="card">
-            <h2>📊 Resumo do Sistema</h2>
+        <br>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Função</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
+        <button onclick="window.location.href='produtos.html'">
+            VER PRODUTOS
+        </button>
+    </div>
 
-                <tbody>
-                    <tr>
-                        <td>Cadastro de Clientes</td>
-                        <td>✅ Ativo</td>
-                    </tr>
+    <div class="card">
 
-                    <tr>
-                        <td>Controle de Estoque</td>
-                        <td>✅ Ativo</td>
-                    </tr>
+        <h2>⚽ Categorias</h2>
 
-                    <tr>
-                        <td>Registro de Vendas</td>
-                        <td>✅ Ativo</td>
-                    </tr>
+        <div class="categorias">
 
-                    <tr>
-                        <td>Consulta de Vendas</td>
-                        <td>✅ Ativo</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
+            <div class="categoria">
+                <span>⚽</span>
+                Futebol
+            </div>
 
-        <section class="card">
-            <h2>📋 Sobre o Projeto</h2>
+            <div class="categoria">
+                <span>🏀</span>
+                Basquete
+            </div>
 
-            <p>
-                Este sistema foi desenvolvido com HTML, CSS, Node.js,
-                Express e SQLite para auxiliar no gerenciamento de uma
-                loja esportiva. O projeto permite cadastrar clientes,
-                controlar produtos, realizar vendas e acompanhar o
-                estoque em tempo real.
-            </p>
-        </section>
+            <div class="categoria">
+                <span>🏃</span>
+                Corrida
+            </div>
 
-    </main>
+            <div class="categoria">
+                <span>🏋️</span>
+                Academia
+            </div>
 
-    <footer class="rodape">
-        <p><strong>SPORT+</strong> - Sistema de Loja Esportiva</p>
-        <p>Desenvolvido para fins educacionais</p>
-        <p>© 2026 Todos os direitos reservados</p>
-    </footer>
+            <div class="categoria">
+                <span>👟</span>
+                Tênis
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <h2>🔥 Produtos em Destaque</h2>
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Categoria</th>
+                    <th>Preço</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr>
+                    <td>Chuteira Pro</td>
+                    <td>Futebol</td>
+                    <td>R$ 299,90</td>
+                </tr>
+
+                <tr>
+                    <td>Bola Oficial</td>
+                    <td>Futebol</td>
+                    <td>R$ 149,90</td>
+                </tr>
+
+                <tr>
+                    <td>Tênis Running</td>
+                    <td>Corrida</td>
+                    <td>R$ 349,90</td>
+                </tr>
+
+                <tr>
+                    <td>Camisa Dry Fit</td>
+                    <td>Academia</td>
+                    <td>R$ 89,90</td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<footer class="rodape">
+    <p>© 2026 SPORT+ - Loja Esportiva</p>
+    <p>Desenvolvido para fins educacionais</p>
+</footer>
+
+<script>
+
+fetch('/dashboard')
+.then(res => res.json())
+.then(dados => {
+
+    document.getElementById('clientes')
+    .innerHTML = dados.clientes;
+
+    document.getElementById('produtos')
+    .innerHTML = dados.produtos;
+
+    document.getElementById('vendas')
+    .innerHTML = dados.vendas;
+
+    document.getElementById('mais-vendido')
+    .innerHTML = dados.produtoMaisVendido;
+
+})
+.catch(() => {
+
+    console.log(
+        'Dashboard ainda sem dados.'
+    );
+
+});
+
+</script>
 
 </body>
 </html>
