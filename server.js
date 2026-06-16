@@ -8,10 +8,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static('.'));
 
+/* ============================
+   BANCO DE DADOS
+============================ */
+
 const db = new sqlite3.Database('./lojaesportiva.db');
 
 db.serialize(() => {
 
+    // CLIENTES
     db.run(`
         CREATE TABLE IF NOT EXISTS clientes (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -21,6 +26,7 @@ db.serialize(() => {
         )
     `);
 
+    // PRODUTOS
     db.run(`
         CREATE TABLE IF NOT EXISTS produtos (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,16 +37,19 @@ db.serialize(() => {
         )
     `);
 
+    // VENDAS
     db.run(`
         CREATE TABLE IF NOT EXISTS vendas (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             cliente_id INTEGER,
             data TEXT,
             total REAL,
-            FOREIGN KEY(cliente_id) REFERENCES clientes(id)
+            FOREIGN KEY(cliente_id)
+            REFERENCES clientes(id)
         )
     `);
 
+    // ITENS DA VENDA
     db.run(`
         CREATE TABLE IF NOT EXISTS itens_venda (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -48,171 +57,101 @@ db.serialize(() => {
             produto_id INTEGER,
             quantidade INTEGER,
             preco_unitario REAL,
-            FOREIGN KEY(venda_id) REFERENCES vendas(id),
-            FOREIGN KEY(produto_id) REFERENCES produtos(id)
+            FOREIGN KEY(venda_id)
+            REFERENCES vendas(id),
+            FOREIGN KEY(produto_id)
+            REFERENCES produtos(id)
         )
     `);
+
 });
 
-/* CLIENTES */
+/* ============================
+   CLIENTES
+============================ */
+
+// CADASTRAR CLIENTE
 
 app.post('/salvar-cliente', (req, res) => {
-    const { nome, cpf, telefone } = req.body;
+
+    const {
+        nome,
+        cpf,
+        telefone
+    } = req.body;
 
     db.run(
-        `INSERT INTO clientes(nome, cpf, telefone) VALUES (?, ?, ?)`,
+        `
+        INSERT INTO clientes
+        (nome, cpf, telefone)
+        VALUES (?, ?, ?)
+        `,
         [nome, cpf, telefone],
         (err) => {
-            if (err) return res.status(500).send(err.message);
+
+            if (err) {
+                return res
+                .status(500)
+                .send(err.message);
+            }
+
             res.redirect('/clientes.html');
+
         }
     );
+
 });
+
+// LISTAR CLIENTES
 
 app.get('/listar-clientes', (req, res) => {
-    db.all(
-        `SELECT * FROM clientes ORDER BY nome`,
-        [],
-        (err, rows) => {
-            if (err) return res.status(500).json(err);
-            res.json(rows);
-        }
-    );
-});
-
-/* PRODUTOS */
-
-app.post('/salvar-produto', (req, res) => {
-
-    const { nome, categoria, preco, estoque } = req.body;
-
-    db.run(
-        `INSERT INTO produtos(nome,categoria,preco,estoque)
-         VALUES(?,?,?,?)`,
-        [nome, categoria, preco, estoque],
-        (err) => {
-            if (err) return res.status(500).send(err.message);
-            res.redirect('/produtos.html');
-        }
-    );
-});
-
-app.get('/listar-produtos', (req, res) => {
 
     db.all(
-        `SELECT * FROM produtos ORDER BY nome`,
+        `
+        SELECT *
+        FROM clientes
+        ORDER BY nome
+        `,
         [],
         (err, rows) => {
-            if (err) return res.status(500).json(err);
+
+            if (err) {
+                return res
+                .status(500)
+                .json(err);
+            }
+
             res.json(rows);
+
         }
     );
+
 });
 
-/* VENDAS */
+// BUSCAR CLIENTES
 
-app.post('/finalizar-venda', (req, res) => {
+app.get('/buscar-clientes/:nome', (req, res) => {
 
-    const { cliente_id, total, itens } = req.body;
+    const nome = req.params.nome;
 
-    const data = new Date().toLocaleString('pt-BR');
+    db.all(
+        `
+        SELECT *
+        FROM clientes
+        WHERE nome LIKE ?
+        `,
+        [`%${nome}%`],
+        (err, rows) => {
 
-    db.run(
-        `INSERT INTO vendas(cliente_id,data,total)
-         VALUES(?,?,?)`,
-        [cliente_id, data, total],
-        function (err) {
+            if (err) {
+                return res
+                .status(500)
+                .json(err);
+            }
 
-            if (err)
-                return res.status(500).json(err);
+            res.json(rows);
 
-            const vendaId = this.lastID;
-
-            const stmt = db.prepare(`
-                INSERT INTO itens_venda
-                (venda_id, produto_id, quantidade, preco_unitario)
-                VALUES (?, ?, ?, ?)
-            `);
-
-            itens.forEach(item => {
-
-                stmt.run(
-                    vendaId,
-                    item.id,
-                    item.qtd,
-                    item.preco
-                );
-
-                db.run(
-                    `
-                    UPDATE produtos
-                    SET estoque = estoque - ?
-                    WHERE id = ?
-                    `,
-                    [item.qtd, item.id]
-                );
-            });
-
-            stmt.finalize();
-
-            res.json({
-                success: true
-            });
         }
     );
-});
-
-app.get('/listar-vendas', (req, res) => {
-
-    const sql = `
-    SELECT
-        v.id,
-        v.data,
-        v.total,
-        c.nome AS nome_cliente
-    FROM vendas v
-    INNER JOIN clientes c
-    ON v.cliente_id = c.id
-    ORDER BY v.id DESC
-    `;
-
-    db.all(sql, [], (err, rows) => {
-
-        if (err)
-            return res.status(500).json(err);
-
-        res.json(rows);
-    });
-});
-
-app.get('/detalhes-venda/:id', (req, res) => {
-
-    const { id } = req.params;
-
-    const sql = `
-    SELECT
-        i.*,
-        p.nome
-    FROM itens_venda i
-    INNER JOIN produtos p
-    ON i.produto_id = p.id
-    WHERE i.venda_id = ?
-    `;
-
-    db.all(sql, [id], (err, rows) => {
-
-        if (err)
-            return res.status(500).json(err);
-
-        res.json(rows);
-    });
-});
-
-app.listen(3000, () => {
-
-    console.log('===================================');
-    console.log('LOJA ESPORTIVA ONLINE');
-    console.log('http://localhost:3000');
-    console.log('===================================');
 
 });
