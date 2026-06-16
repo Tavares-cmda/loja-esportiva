@@ -1,198 +1,372 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>SportMax - Vendas</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPORT+ | Vendas</title>
 <link rel="stylesheet" href="estilo.css">
 </head>
+
 <body>
 
 <nav>
-    <a href="index.html">Home</a>
-    <a href="clientes.html">Clientes</a>
-    <a href="produtos.html">Produtos</a>
-    <a href="vendas.html">Vendas</a>
-    <a href="consulta_vendas.html">Consultar Vendas</a>
+    <a href="index.html">🏠 Home</a>
+    <a href="clientes.html">👥 Clientes</a>
+    <a href="produtos.html">📦 Produtos</a>
+    <a href="vendas.html">🛒 Vendas</a>
+    <a href="consulta_vendas.html">📊 Consultas</a>
 </nav>
 
 <header class="banner">
-    <h1>Registrar Venda</h1>
-    <p>Controle de vendas da loja</p>
+    <h1>🛒 Nova Venda</h1>
+    <p>Realize vendas e controle o estoque automaticamente</p>
 </header>
 
 <div class="container">
 
-<div class="card">
+    <div class="card">
 
-<h2>Nova Venda</h2>
+        <h2>Cliente</h2>
 
-<label>Cliente</label>
-<select id="cliente"></select>
+        <select id="cliente">
+            <option value="">Selecione um cliente</option>
+        </select>
 
-<label>Produto</label>
-<select id="produto"></select>
+    </div>
 
-<label>Quantidade</label>
-<input type="number" id="quantidade" value="1">
+    <div class="card">
 
-<button onclick="adicionarCarrinho()">
-Adicionar ao Carrinho
-</button>
+        <h2>Adicionar Produto</h2>
+
+        <select id="produto">
+            <option value="">Selecione um produto</option>
+        </select>
+
+        <br><br>
+
+        <input
+            type="number"
+            id="quantidade"
+            min="1"
+            value="1"
+            placeholder="Quantidade"
+        >
+
+        <br><br>
+
+        <button onclick="adicionarCarrinho()">
+            ➕ Adicionar ao Carrinho
+        </button>
+
+    </div>
+
+    <div class="card">
+
+        <h2>🛒 Carrinho</h2>
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Qtd</th>
+                    <th>Preço</th>
+                    <th>Subtotal</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+
+            <tbody id="carrinho">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <div class="card">
+
+        <h2>💰 Resumo</h2>
+
+        <p>
+            Total da Venda:
+            <strong id="total">
+                R$ 0,00
+            </strong>
+        </p>
+
+        <br>
+
+        <button onclick="finalizarVenda()">
+            ✅ Finalizar Venda
+        </button>
+
+    </div>
 
 </div>
 
-<div class="card">
-
-<h2>Carrinho</h2>
-
-<table>
-
-<thead>
-<tr>
-<th>Produto</th>
-<th>Qtd</th>
-<th>Preço</th>
-</tr>
-</thead>
-
-<tbody id="carrinho">
-</tbody>
-
-</table>
-
-<h3 id="total">
-Total: R$ 0.00
-</h3>
-
-<button onclick="finalizarVenda()">
-Finalizar Venda
-</button>
-
-</div>
-
-</div>
+<footer class="rodape">
+    <p>© 2026 SPORT+ - Loja Esportiva</p>
+</footer>
 
 <script>
 
 let produtos = [];
-let itensVenda = [];
-let total = 0;
+let carrinho = [];
+
+const selectCliente =
+document.getElementById('cliente');
+
+const selectProduto =
+document.getElementById('produto');
+
+const tabelaCarrinho =
+document.getElementById('carrinho');
+
+const totalElemento =
+document.getElementById('total');
+
+/* CLIENTES */
 
 fetch('/listar-clientes')
 .then(res => res.json())
 .then(clientes => {
 
-const select =
-document.getElementById('cliente');
+    clientes.forEach(cliente => {
 
-clientes.forEach(cliente => {
+        selectCliente.innerHTML += `
+            <option value="${cliente.id}">
+                ${cliente.nome}
+            </option>
+        `;
 
-select.innerHTML += `
-<option value="${cliente.id}">
-${cliente.nome}
-</option>
-`;
-
-});
+    });
 
 });
+
+/* PRODUTOS */
 
 fetch('/listar-produtos')
 .then(res => res.json())
 .then(lista => {
 
-produtos = lista;
+    produtos = lista;
 
-const select =
-document.getElementById('produto');
+    lista.forEach(produto => {
 
-lista.forEach(produto => {
+        selectProduto.innerHTML += `
+            <option value="${produto.id}">
+                ${produto.nome}
+                (Estoque: ${produto.estoque})
+            </option>
+        `;
 
-select.innerHTML += `
-<option value="${produto.id}">
-${produto.nome} - R$ ${produto.preco}
-</option>
-`;
-
-});
+    });
 
 });
 
 function adicionarCarrinho(){
 
-const produtoId =
-parseInt(document.getElementById('produto').value);
+    const id =
+    parseInt(selectProduto.value);
 
-const qtd =
-parseInt(document.getElementById('quantidade').value);
+    const qtd =
+    parseInt(
+        document.getElementById(
+            'quantidade'
+        ).value
+    );
 
-const produto =
-produtos.find(p => p.id === produtoId);
+    if(!id){
 
-const subtotal =
-produto.preco * qtd;
+        alert(
+            'Selecione um produto.'
+        );
 
-total += subtotal;
+        return;
+    }
 
-itensVenda.push({
-id: produto.id,
-qtd: qtd,
-preco: produto.preco
-});
+    const produto =
+    produtos.find(
+        p => p.id === id
+    );
 
-document.getElementById('carrinho').innerHTML += `
-<tr>
-<td>${produto.nome}</td>
-<td>${qtd}</td>
-<td>R$ ${subtotal.toFixed(2)}</td>
-</tr>
-`;
+    if(!produto){
 
-document.getElementById('total').innerHTML =
-`Total: R$ ${total.toFixed(2)}`;
+        return;
+    }
+
+    carrinho.push({
+
+        id: produto.id,
+        nome: produto.nome,
+        preco: produto.preco,
+        qtd: qtd
+
+    });
+
+    atualizarCarrinho();
+
+}
+
+function removerItem(index){
+
+    carrinho.splice(index,1);
+
+    atualizarCarrinho();
+
+}
+
+function atualizarCarrinho(){
+
+    tabelaCarrinho.innerHTML = '';
+
+    let total = 0;
+
+    carrinho.forEach(
+    (item,index) => {
+
+        const subtotal =
+        item.preco * item.qtd;
+
+        total += subtotal;
+
+        tabelaCarrinho.innerHTML += `
+        <tr>
+
+            <td>
+                ${item.nome}
+            </td>
+
+            <td>
+                ${item.qtd}
+            </td>
+
+            <td>
+                R$ ${Number(item.preco)
+                .toFixed(2)}
+            </td>
+
+            <td>
+                R$ ${subtotal.toFixed(2)}
+            </td>
+
+            <td>
+
+                <button
+                onclick="removerItem(${index})">
+
+                ❌
+
+                </button>
+
+            </td>
+
+        </tr>
+        `;
+
+    });
+
+    totalElemento.innerHTML =
+    `R$ ${total.toFixed(2)}`;
 
 }
 
 function finalizarVenda(){
 
-fetch('/finalizar-venda',{
+    if(
+        selectCliente.value === ''
+    ){
 
-method:'POST',
+        alert(
+            'Selecione um cliente.'
+        );
 
-headers:{
-'Content-Type':'application/json'
-},
+        return;
+    }
 
-body:JSON.stringify({
+    if(
+        carrinho.length === 0
+    ){
 
-cliente_id:
-document.getElementById('cliente').value,
+        alert(
+            'Carrinho vazio.'
+        );
 
-total: total,
+        return;
+    }
 
-itens: itensVenda
+    let total = 0;
 
-})
+    carrinho.forEach(item => {
 
-})
+        total +=
+        item.preco * item.qtd;
 
-.then(res => res.json())
+    });
 
-.then(() => {
+    fetch(
+        '/finalizar-venda',
+        {
 
-alert('Venda realizada com sucesso!');
+            method:'POST',
 
-location.reload();
+            headers:{
+                'Content-Type':
+                'application/json'
+            },
 
-});
+            body: JSON.stringify({
+
+                cliente_id:
+                selectCliente.value,
+
+                total: total,
+
+                itens: carrinho
+
+            })
+
+        }
+    )
+
+    .then(res => res.json())
+
+    .then(resultado => {
+
+        if(resultado.success){
+
+            alert(
+                'Venda realizada com sucesso!'
+            );
+
+            carrinho = [];
+
+            atualizarCarrinho();
+
+            location.reload();
+
+        }else{
+
+            alert(
+                'Erro ao salvar venda.'
+            );
+
+        }
+
+    })
+
+    .catch(() => {
+
+        alert(
+            'Erro ao finalizar venda.'
+        );
+
+    });
 
 }
 
 </script>
-
-<footer class="rodape">
-<p>© 2026 SportMax</p>
-</footer>
 
 </body>
 </html>
