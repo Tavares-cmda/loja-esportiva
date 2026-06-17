@@ -3,296 +3,422 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SPORT+ | Produtos</title>
-<link rel="stylesheet" href="estilo.css">
-</head>
+<title>Produtos - SPORT+ PRO 2.0</title>
 
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f4f6f9;
+}
+
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    width:250px;
+    height:100%;
+    background:#111827;
+    padding:20px;
+}
+
+.logo{
+    color:white;
+    text-align:center;
+    font-size:28px;
+    font-weight:bold;
+    margin-bottom:30px;
+}
+
+.menu a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:14px;
+    margin-bottom:8px;
+    border-radius:10px;
+}
+
+.menu a:hover{
+    background:#2563eb;
+}
+
+.main{
+    margin-left:250px;
+    padding:30px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:20px;
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+}
+
+input,select{
+    width:100%;
+    padding:12px;
+    margin-bottom:10px;
+    border:1px solid #ddd;
+    border-radius:8px;
+}
+
+button{
+    border:none;
+    padding:10px 15px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.salvar{
+    background:#2563eb;
+    color:white;
+}
+
+.editar{
+    background:#f59e0b;
+    color:white;
+}
+
+.excluir{
+    background:#dc2626;
+    color:white;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:12px;
+    border-bottom:1px solid #ddd;
+}
+
+th{
+    background:#2563eb;
+    color:white;
+}
+
+.produto-img{
+    width:60px;
+    height:60px;
+    object-fit:cover;
+    border-radius:8px;
+}
+
+</style>
+
+</head>
 <body>
 
-<nav>
-    <a href="index.html">🏠 Home</a>
-    <a href="clientes.html">👥 Clientes</a>
-    <a href="produtos.html">📦 Produtos</a>
-    <a href="vendas.html">🛒 Vendas</a>
-    <a href="consulta_vendas.html">📊 Consultas</a>
-</nav>
+<div class="sidebar">
 
-<header class="banner">
-    <h1>📦 Gestão de Produtos</h1>
-    <p>Controle de estoque da SPORT+</p>
-</header>
-
-<div class="container">
-
-    <!-- CADASTRO -->
-
-    <div class="card">
-
-        <h2>Novo Produto</h2>
-
-        <form action="/salvar-produto" method="POST">
-
-            <label>Nome do Produto</label>
-            <input
-                type="text"
-                name="nome"
-                placeholder="Ex: Chuteira Nike Mercurial"
-                required
-            >
-
-            <label>Categoria</label>
-
-            <select name="categoria" required>
-
-                <option value="">Selecione</option>
-
-                <option>Futebol</option>
-                <option>Basquete</option>
-                <option>Corrida</option>
-                <option>Academia</option>
-                <option>Tênis</option>
-                <option>Vôlei</option>
-                <option>Natação</option>
-
-            </select>
-
-            <label>Preço (R$)</label>
-
-            <input
-                type="number"
-                step="0.01"
-                name="preco"
-                required
-            >
-
-            <label>Quantidade em Estoque</label>
-
-            <input
-                type="number"
-                name="estoque"
-                min="0"
-                required
-            >
-
-            <button type="submit">
-                ➕ Salvar Produto
-            </button>
-
-        </form>
-
+    <div class="logo">
+        SPORT+
     </div>
 
-    <!-- PESQUISA -->
-
-    <div class="card">
-
-        <h2>🔍 Pesquisa</h2>
-
-        <input
-            type="text"
-            id="campoBusca"
-            placeholder="Digite o nome do produto..."
-        >
-
-        <br><br>
-
-        <button onclick="carregarProdutos()">
-            🔄 Atualizar Lista
-        </button>
-
-    </div>
-
-    <!-- ESTATÍSTICAS -->
-
-    <div class="card">
-
-        <h2>📈 Estatísticas</h2>
-
-        <p>
-            Total de produtos:
-            <strong id="totalProdutos">0</strong>
-        </p>
-
-        <p>
-            Produtos com estoque baixo:
-            <strong id="estoqueBaixo">0</strong>
-        </p>
-
-    </div>
-
-    <!-- TABELA -->
-
-    <div class="card">
-
-        <h2>📋 Produtos Cadastrados</h2>
-
-        <table>
-
-            <thead>
-
-                <tr>
-                    <th>ID</th>
-                    <th>Produto</th>
-                    <th>Categoria</th>
-                    <th>Preço</th>
-                    <th>Estoque</th>
-                    <th>Status</th>
-                </tr>
-
-            </thead>
-
-            <tbody id="listaProdutos">
-
-            </tbody>
-
-        </table>
-
+    <div class="menu">
+        <a href="index.html">🏠 Home</a>
+        <a href="clientes.html">👥 Clientes</a>
+        <a href="produtos.html">📦 Produtos</a>
+        <a href="vendas.html">🛒 Vendas</a>
+        <a href="consultas.html">📊 Consultas</a>
     </div>
 
 </div>
 
-<footer class="rodape">
+<div class="main">
 
-    <p>© 2026 SPORT+ - Loja Esportiva</p>
-    <p>Sistema de Controle de Estoque</p>
+<h1>Produtos</h1>
 
-</footer>
+<div class="card">
+
+<input type="hidden" id="id">
+
+<input
+type="text"
+id="nome"
+placeholder="Nome do produto">
+
+<select id="categoria">
+
+<option>Chuteira de Campo</option>
+<option>Chuteira Society</option>
+<option>Chuteira Futsal</option>
+<option>Bola Oficial</option>
+<option>Bola de Basquete</option>
+<option>Tênis de Corrida</option>
+<option>Camisa Dry Fit</option>
+<option>Luva de Academia</option>
+<option>Óculos de Natação</option>
+
+</select>
+
+<input
+type="number"
+step="0.01"
+id="preco"
+placeholder="Preço">
+
+<input
+type="number"
+id="estoque"
+placeholder="Estoque">
+
+<input
+type="text"
+id="imagem"
+placeholder="URL da imagem">
+
+<button
+class="salvar"
+onclick="salvarProduto()">
+Salvar Produto
+</button>
+
+</div>
+
+<div class="card">
+
+<input
+type="text"
+id="busca"
+placeholder="Pesquisar produto"
+onkeyup="pesquisarProduto()">
+
+</div>
+
+<div class="card">
+
+<table>
+
+<thead>
+<tr>
+<th>Foto</th>
+<th>Nome</th>
+<th>Categoria</th>
+<th>Preço</th>
+<th>Estoque</th>
+<th>Ações</th>
+</tr>
+</thead>
+
+<tbody id="tabelaProdutos">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
 
 <script>
 
-const tabela =
-document.getElementById(
-    'listaProdutos'
-);
+// proteção
+fetch("/session")
+.then(r=>r.json())
+.then(user=>{
+    if(!user){
+        location.href="login.html";
+    }
+});
 
-const totalProdutos =
-document.getElementById(
-    'totalProdutos'
-);
+async function carregarProdutos(){
 
-const estoqueBaixo =
-document.getElementById(
-    'estoqueBaixo'
-);
+    const resposta =
+        await fetch("/produtos");
 
-function renderizar(produtos){
+    const produtos =
+        await resposta.json();
 
-    tabela.innerHTML = '';
+    let html = "";
 
-    totalProdutos.innerHTML =
-    produtos.length;
+    produtos.forEach(produto=>{
 
-    let contadorBaixo = 0;
-
-    produtos.forEach(produto => {
-
-        let status =
-        '✅ Normal';
-
-        if(produto.estoque <= 5){
-
-            status =
-            '⚠️ Estoque Baixo';
-
-            contadorBaixo++;
-
-        }
-
-        tabela.innerHTML += `
+        html += `
         <tr>
 
-            <td>${produto.id}</td>
+        <td>
+            <img
+            src="${produto.imagem || 'https://via.placeholder.com/60'}"
+            class="produto-img">
+        </td>
 
-            <td>
-                <strong>
-                    ${produto.nome}
-                </strong>
-            </td>
+        <td>${produto.nome}</td>
+        <td>${produto.categoria}</td>
+        <td>R$ ${Number(produto.preco).toFixed(2)}</td>
+        <td>${produto.estoque}</td>
 
-            <td>
-                ${produto.categoria}
-            </td>
+        <td>
 
-            <td>
-                R$ ${Number(produto.preco)
-                .toFixed(2)}
-            </td>
+            <button
+            class="editar"
+            onclick="editarProduto(
+                ${produto.id},
+                '${produto.nome}',
+                '${produto.categoria}',
+                '${produto.preco}',
+                '${produto.estoque}',
+                '${produto.imagem || ""}'
+            )">
+            Editar
+            </button>
 
-            <td>
-                ${produto.estoque}
-            </td>
+            <button
+            class="excluir"
+            onclick="excluirProduto(${produto.id})">
+            Excluir
+            </button>
 
-            <td>
-                ${status}
-            </td>
+        </td>
 
         </tr>
         `;
 
     });
 
-    estoqueBaixo.innerHTML =
-    contadorBaixo;
+    document.getElementById(
+        "tabelaProdutos"
+    ).innerHTML = html;
 
 }
 
-function carregarProdutos(){
+async function salvarProduto(){
 
-    fetch('/listar-produtos')
+    const id =
+        document.getElementById("id").value;
 
-    .then(res => res.json())
+    const dados = {
 
-    .then(produtos => {
+        nome:
+        document.getElementById("nome").value,
 
-        renderizar(produtos);
+        categoria:
+        document.getElementById("categoria").value,
 
-    })
+        preco:
+        document.getElementById("preco").value,
 
-    .catch(() => {
+        estoque:
+        document.getElementById("estoque").value,
 
-        alert(
-            'Erro ao carregar produtos.'
+        imagem:
+        document.getElementById("imagem").value
+
+    };
+
+    if(id){
+
+        await fetch(
+            "/produtos/"+id,
+            {
+                method:"PUT",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify(dados)
+            }
         );
 
+    }else{
+
+        await fetch(
+            "/produtos",
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify(dados)
+            }
+        );
+
+    }
+
+    limpar();
+    carregarProdutos();
+
+}
+
+function editarProduto(
+    id,
+    nome,
+    categoria,
+    preco,
+    estoque,
+    imagem
+){
+
+    document.getElementById("id").value=id;
+    document.getElementById("nome").value=nome;
+    document.getElementById("categoria").value=categoria;
+    document.getElementById("preco").value=preco;
+    document.getElementById("estoque").value=estoque;
+    document.getElementById("imagem").value=imagem;
+
+}
+
+async function excluirProduto(id){
+
+    if(!confirm(
+        "Deseja excluir este produto?"
+    )) return;
+
+    await fetch(
+        "/produtos/"+id,
+        {
+            method:"DELETE"
+        }
+    );
+
+    carregarProdutos();
+
+}
+
+function pesquisarProduto(){
+
+    const texto =
+        document.getElementById("busca")
+        .value.toLowerCase();
+
+    const linhas =
+        document.querySelectorAll(
+            "#tabelaProdutos tr"
+        );
+
+    linhas.forEach(linha=>{
+
+        linha.style.display =
+            linha.innerText
+            .toLowerCase()
+            .includes(texto)
+            ? ""
+            : "none";
+
     });
+
+}
+
+function limpar(){
+
+    document.getElementById("id").value="";
+    document.getElementById("nome").value="";
+    document.getElementById("preco").value="";
+    document.getElementById("estoque").value="";
+    document.getElementById("imagem").value="";
 
 }
 
 carregarProdutos();
-
-document
-.getElementById(
-    'campoBusca'
-)
-
-.addEventListener(
-'keyup',
-
-function(){
-
-    const texto =
-    this.value.trim();
-
-    if(texto === ''){
-
-        carregarProdutos();
-        return;
-
-    }
-
-    fetch(
-        `/buscar-produtos/${texto}`
-    )
-
-    .then(res => res.json())
-
-    .then(produtos => {
-
-        renderizar(produtos);
-
-    });
-
-});
 
 </script>
 
