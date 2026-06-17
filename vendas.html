@@ -3,209 +3,355 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SPORT+ | Vendas</title>
-<link rel="stylesheet" href="estilo.css">
-</head>
+<title>Vendas - SPORT+ PRO 2.0</title>
 
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f4f6f9;
+}
+
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    width:250px;
+    height:100%;
+    background:#111827;
+    padding:20px;
+}
+
+.logo{
+    color:white;
+    text-align:center;
+    font-size:28px;
+    font-weight:bold;
+    margin-bottom:30px;
+}
+
+.menu a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:14px;
+    margin-bottom:8px;
+    border-radius:10px;
+}
+
+.menu a:hover{
+    background:#2563eb;
+}
+
+.main{
+    margin-left:250px;
+    padding:30px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:20px;
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+}
+
+select,input{
+    width:100%;
+    padding:12px;
+    margin-bottom:10px;
+    border:1px solid #ddd;
+    border-radius:8px;
+}
+
+button{
+    border:none;
+    padding:10px 15px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.adicionar{
+    background:#2563eb;
+    color:white;
+}
+
+.finalizar{
+    background:#16a34a;
+    color:white;
+}
+
+.remover{
+    background:#dc2626;
+    color:white;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:12px;
+    border-bottom:1px solid #ddd;
+}
+
+th{
+    background:#2563eb;
+    color:white;
+}
+
+.total{
+    font-size:28px;
+    font-weight:bold;
+    color:#16a34a;
+    margin-top:15px;
+}
+
+</style>
+</head>
 <body>
 
-<nav>
-    <a href="index.html">🏠 Home</a>
-    <a href="clientes.html">👥 Clientes</a>
-    <a href="produtos.html">📦 Produtos</a>
-    <a href="vendas.html">🛒 Vendas</a>
-    <a href="consulta_vendas.html">📊 Consultas</a>
-</nav>
+<div class="sidebar">
 
-<header class="banner">
-    <h1>🛒 Nova Venda</h1>
-    <p>Realize vendas e controle o estoque automaticamente</p>
-</header>
+    <div class="logo">SPORT+</div>
 
-<div class="container">
-
-    <div class="card">
-
-        <h2>Cliente</h2>
-
-        <select id="cliente">
-            <option value="">Selecione um cliente</option>
-        </select>
-
-    </div>
-
-    <div class="card">
-
-        <h2>Adicionar Produto</h2>
-
-        <select id="produto">
-            <option value="">Selecione um produto</option>
-        </select>
-
-        <br><br>
-
-        <input
-            type="number"
-            id="quantidade"
-            min="1"
-            value="1"
-            placeholder="Quantidade"
-        >
-
-        <br><br>
-
-        <button onclick="adicionarCarrinho()">
-            ➕ Adicionar ao Carrinho
-        </button>
-
-    </div>
-
-    <div class="card">
-
-        <h2>🛒 Carrinho</h2>
-
-        <table>
-
-            <thead>
-                <tr>
-                    <th>Produto</th>
-                    <th>Qtd</th>
-                    <th>Preço</th>
-                    <th>Subtotal</th>
-                    <th>Ação</th>
-                </tr>
-            </thead>
-
-            <tbody id="carrinho">
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-    <div class="card">
-
-        <h2>💰 Resumo</h2>
-
-        <p>
-            Total da Venda:
-            <strong id="total">
-                R$ 0,00
-            </strong>
-        </p>
-
-        <br>
-
-        <button onclick="finalizarVenda()">
-            ✅ Finalizar Venda
-        </button>
-
+    <div class="menu">
+        <a href="index.html">🏠 Home</a>
+        <a href="clientes.html">👥 Clientes</a>
+        <a href="produtos.html">📦 Produtos</a>
+        <a href="vendas.html">🛒 Vendas</a>
+        <a href="consultas.html">📊 Consultas</a>
     </div>
 
 </div>
 
-<footer class="rodape">
-    <p>© 2026 SPORT+ - Loja Esportiva</p>
-</footer>
+<div class="main">
+
+<h1>Nova Venda</h1>
+
+<div class="card">
+
+<select id="cliente"></select>
+
+<select id="produto"></select>
+
+<input
+type="number"
+id="quantidade"
+placeholder="Quantidade"
+value="1"
+min="1">
+
+<button
+class="adicionar"
+onclick="adicionarCarrinho()">
+Adicionar ao Carrinho
+</button>
+
+</div>
+
+<div class="card">
+
+<table>
+
+<thead>
+<tr>
+<th>Produto</th>
+<th>Preço</th>
+<th>Qtd</th>
+<th>Subtotal</th>
+<th>Ações</th>
+</tr>
+</thead>
+
+<tbody id="carrinho"></tbody>
+
+</table>
+
+<div
+class="total"
+id="total">
+R$ 0,00
+</div>
+
+<br>
+
+<button
+class="finalizar"
+onclick="finalizarVenda()">
+Finalizar Venda
+</button>
+
+</div>
+
+</div>
 
 <script>
 
 let produtos = [];
 let carrinho = [];
 
-const selectCliente =
-document.getElementById('cliente');
+fetch("/session")
+.then(r=>r.json())
+.then(user=>{
+    if(!user){
+        location.href="login.html";
+    }
+});
 
-const selectProduto =
-document.getElementById('produto');
+async function carregarClientes(){
 
-const tabelaCarrinho =
-document.getElementById('carrinho');
+    const resposta =
+        await fetch("/clientes");
 
-const totalElemento =
-document.getElementById('total');
+    const clientes =
+        await resposta.json();
 
-/* CLIENTES */
+    let html = "";
 
-fetch('/listar-clientes')
-.then(res => res.json())
-.then(clientes => {
+    clientes.forEach(cliente=>{
 
-    clientes.forEach(cliente => {
-
-        selectCliente.innerHTML += `
-            <option value="${cliente.id}">
-                ${cliente.nome}
-            </option>
+        html += `
+        <option value="${cliente.id}">
+            ${cliente.nome}
+        </option>
         `;
 
     });
 
-});
+    document.getElementById(
+        "cliente"
+    ).innerHTML = html;
 
-/* PRODUTOS */
+}
 
-fetch('/listar-produtos')
-.then(res => res.json())
-.then(lista => {
+async function carregarProdutos(){
 
-    produtos = lista;
+    const resposta =
+        await fetch("/produtos");
 
-    lista.forEach(produto => {
+    produtos =
+        await resposta.json();
 
-        selectProduto.innerHTML += `
-            <option value="${produto.id}">
-                ${produto.nome}
-                (Estoque: ${produto.estoque})
-            </option>
+    let html = "";
+
+    produtos.forEach(produto=>{
+
+        html += `
+        <option value="${produto.id}">
+            ${produto.nome}
+            - R$ ${produto.preco}
+        </option>
         `;
 
     });
 
-});
+    document.getElementById(
+        "produto"
+    ).innerHTML = html;
+
+}
 
 function adicionarCarrinho(){
 
-    const id =
-    parseInt(selectProduto.value);
-
-    const qtd =
-    parseInt(
-        document.getElementById(
-            'quantidade'
-        ).value
-    );
-
-    if(!id){
-
-        alert(
-            'Selecione um produto.'
+    const produtoId =
+        Number(
+            document.getElementById("produto").value
         );
 
-        return;
-    }
+    const quantidade =
+        Number(
+            document.getElementById("quantidade").value
+        );
 
     const produto =
-    produtos.find(
-        p => p.id === id
-    );
+        produtos.find(
+            p=>p.id===produtoId
+        );
 
-    if(!produto){
-
-        return;
-    }
+    if(!produto) return;
 
     carrinho.push({
 
-        id: produto.id,
-        nome: produto.nome,
-        preco: produto.preco,
-        qtd: qtd
+        produto_id:
+        produto.id,
+
+        nome:
+        produto.nome,
+
+        preco:
+        Number(produto.preco),
+
+        quantidade:
+        quantidade
 
     });
 
     atualizarCarrinho();
+
+}
+
+function atualizarCarrinho(){
+
+    let html = "";
+    let total = 0;
+
+    carrinho.forEach((item,index)=>{
+
+        const subtotal =
+            item.preco *
+            item.quantidade;
+
+        total += subtotal;
+
+        html += `
+        <tr>
+
+        <td>${item.nome}</td>
+
+        <td>
+        R$ ${item.preco.toFixed(2)}
+        </td>
+
+        <td>
+        ${item.quantidade}
+        </td>
+
+        <td>
+        R$ ${subtotal.toFixed(2)}
+        </td>
+
+        <td>
+
+        <button
+        class="remover"
+        onclick="removerItem(${index})">
+        Remover
+        </button>
+
+        </td>
+
+        </tr>
+        `;
+
+    });
+
+    document.getElementById(
+        "carrinho"
+    ).innerHTML = html;
+
+    document.getElementById(
+        "total"
+    ).innerHTML =
+    "R$ " +
+    total.toFixed(2);
 
 }
 
@@ -217,154 +363,61 @@ function removerItem(index){
 
 }
 
-function atualizarCarrinho(){
+async function finalizarVenda(){
 
-    tabelaCarrinho.innerHTML = '';
-
-    let total = 0;
-
-    carrinho.forEach(
-    (item,index) => {
-
-        const subtotal =
-        item.preco * item.qtd;
-
-        total += subtotal;
-
-        tabelaCarrinho.innerHTML += `
-        <tr>
-
-            <td>
-                ${item.nome}
-            </td>
-
-            <td>
-                ${item.qtd}
-            </td>
-
-            <td>
-                R$ ${Number(item.preco)
-                .toFixed(2)}
-            </td>
-
-            <td>
-                R$ ${subtotal.toFixed(2)}
-            </td>
-
-            <td>
-
-                <button
-                onclick="removerItem(${index})">
-
-                ❌
-
-                </button>
-
-            </td>
-
-        </tr>
-        `;
-
-    });
-
-    totalElemento.innerHTML =
-    `R$ ${total.toFixed(2)}`;
-
-}
-
-function finalizarVenda(){
-
-    if(
-        selectCliente.value === ''
-    ){
+    if(carrinho.length===0){
 
         alert(
-            'Selecione um cliente.'
+            "Carrinho vazio"
         );
 
         return;
+
     }
 
-    if(
-        carrinho.length === 0
-    ){
+    const venda = {
 
-        alert(
-            'Carrinho vazio.'
+        cliente_id:
+        document.getElementById(
+            "cliente"
+        ).value,
+
+        itens:
+        carrinho
+
+    };
+
+    const resposta =
+        await fetch(
+            "/vendas",
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify(venda)
+            }
         );
 
-        return;
+    const dados =
+        await resposta.json();
+
+    if(dados.success){
+
+        alert(
+            "Venda realizada com sucesso!"
+        );
+
+        carrinho = [];
+
+        atualizarCarrinho();
+
     }
-
-    let total = 0;
-
-    carrinho.forEach(item => {
-
-        total +=
-        item.preco * item.qtd;
-
-    });
-
-    fetch(
-        '/finalizar-venda',
-        {
-
-            method:'POST',
-
-            headers:{
-                'Content-Type':
-                'application/json'
-            },
-
-            body: JSON.stringify({
-
-                cliente_id:
-                selectCliente.value,
-
-                total: total,
-
-                itens: carrinho
-
-            })
-
-        }
-    )
-
-    .then(res => res.json())
-
-    .then(resultado => {
-
-        if(resultado.success){
-
-            alert(
-                'Venda realizada com sucesso!'
-            );
-
-            carrinho = [];
-
-            atualizarCarrinho();
-
-            location.reload();
-
-        }else{
-
-            alert(
-                'Erro ao salvar venda.'
-            );
-
-        }
-
-    })
-
-    .catch(() => {
-
-        alert(
-            'Erro ao finalizar venda.'
-        );
-
-    });
 
 }
+
+carregarClientes();
+carregarProdutos();
 
 </script>
 
