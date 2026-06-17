@@ -1,189 +1,291 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SPORT+ | Loja Esportiva</title>
-    <link rel="stylesheet" href="estilo.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPORT+ PRO 2.0</title>
+
+<link rel="stylesheet" href="estilo.css">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#f4f6f9;
+}
+
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    width:250px;
+    height:100%;
+    background:#111827;
+    color:white;
+    padding:20px;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:bold;
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.menu a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:14px;
+    border-radius:10px;
+    margin-bottom:8px;
+    transition:.3s;
+}
+
+.menu a:hover{
+    background:#2563eb;
+}
+
+.main{
+    margin-left:250px;
+    padding:30px;
+}
+
+.titulo{
+    font-size:30px;
+    margin-bottom:25px;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:20px;
+}
+
+.card{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+}
+
+.card h3{
+    color:#555;
+    margin-bottom:10px;
+}
+
+.valor{
+    font-size:32px;
+    font-weight:bold;
+    color:#2563eb;
+}
+
+.banner{
+    margin-top:30px;
+    background:linear-gradient(135deg,#2563eb,#1e40af);
+    color:white;
+    padding:40px;
+    border-radius:20px;
+}
+
+.banner h2{
+    margin-bottom:10px;
+}
+
+.logout{
+    margin-top:30px;
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background:#dc2626;
+    color:white;
+    cursor:pointer;
+}
+
+@media(max-width:900px){
+
+.cards{
+    grid-template-columns:1fr;
+}
+
+.sidebar{
+    width:100%;
+    height:auto;
+    position:relative;
+}
+
+.main{
+    margin-left:0;
+}
+
+}
+
+</style>
+
 </head>
 <body>
 
-<nav>
-    <a href="index.html">HOME</a>
-    <a href="clientes.html">CLIENTES</a>
-    <a href="produtos.html">PRODUTOS</a>
-    <a href="vendas.html">VENDAS</a>
-    <a href="consulta_vendas.html">CONSULTAS</a>
-</nav>
+<div class="sidebar">
 
-<header class="banner">
-    <h1>🏆 SPORT+</h1>
-    <p>Vista sua paixão pelo esporte!</p>
-</header>
-
-<div class="container">
-
-    <div class="card">
-        <h2>📊 Dashboard</h2>
-
-        <div class="categorias">
-
-            <div class="categoria">
-                <span>👥</span>
-                <h3 id="clientes">0</h3>
-                <p>Clientes</p>
-            </div>
-
-            <div class="categoria">
-                <span>📦</span>
-                <h3 id="produtos">0</h3>
-                <p>Produtos</p>
-            </div>
-
-            <div class="categoria">
-                <span>💰</span>
-                <h3 id="vendas">0</h3>
-                <p>Vendas</p>
-            </div>
-
-            <div class="categoria">
-                <span>🏆</span>
-                <h3 id="mais-vendido">-</h3>
-                <p>Mais Vendido</p>
-            </div>
-
-        </div>
+    <div class="logo">
+        SPORT+
     </div>
 
-    <div class="card">
-        <h2>🏪 Bem-vindo à SPORT+</h2>
+    <div class="menu">
+
+        <a href="index.html">
+            🏠 Home
+        </a>
+
+        <a href="clientes.html">
+            👥 Clientes
+        </a>
+
+        <a href="produtos.html">
+            📦 Produtos
+        </a>
+
+        <a href="vendas.html">
+            🛒 Vendas
+        </a>
+
+        <a href="consultas.html">
+            📊 Consultas
+        </a>
+
+    </div>
+
+    <button
+        class="logout"
+        onclick="logout()">
+        Sair
+    </button>
+
+</div>
+
+<div class="main">
+
+    <h1 class="titulo">
+        Dashboard SPORT+ PRO 2.0
+    </h1>
+
+    <div class="cards">
+
+        <div class="card">
+            <h3>Clientes</h3>
+            <div
+                id="clientes"
+                class="valor">
+                0
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Produtos</h3>
+            <div
+                id="produtos"
+                class="valor">
+                0
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Vendas</h3>
+            <div
+                id="vendas"
+                class="valor">
+                0
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Faturamento</h3>
+            <div
+                id="faturamento"
+                class="valor">
+                R$ 0
+            </div>
+        </div>
+
+    </div>
+
+    <div class="banner">
+
+        <h2>
+            Bem-vindo à SPORT+ PRO 2.0
+        </h2>
 
         <p>
-            Sistema completo para gerenciamento de clientes,
-            produtos esportivos, estoque e vendas.
+            Sistema completo para gestão de loja esportiva.
         </p>
-
-        <br>
-
-        <button onclick="window.location.href='produtos.html'">
-            VER PRODUTOS
-        </button>
-    </div>
-
-    <div class="card">
-
-        <h2>⚽ Categorias</h2>
-
-        <div class="categorias">
-
-            <div class="categoria">
-                <span>⚽</span>
-                Futebol
-            </div>
-
-            <div class="categoria">
-                <span>🏀</span>
-                Basquete
-            </div>
-
-            <div class="categoria">
-                <span>🏃</span>
-                Corrida
-            </div>
-
-            <div class="categoria">
-                <span>🏋️</span>
-                Academia
-            </div>
-
-            <div class="categoria">
-                <span>👟</span>
-                Tênis
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="card">
-
-        <h2>🔥 Produtos em Destaque</h2>
-
-        <table>
-
-            <thead>
-                <tr>
-                    <th>Produto</th>
-                    <th>Categoria</th>
-                    <th>Preço</th>
-                </tr>
-            </thead>
-
-            <tbody>
-
-                <tr>
-                    <td>Chuteira Pro</td>
-                    <td>Futebol</td>
-                    <td>R$ 299,90</td>
-                </tr>
-
-                <tr>
-                    <td>Bola Oficial</td>
-                    <td>Futebol</td>
-                    <td>R$ 149,90</td>
-                </tr>
-
-                <tr>
-                    <td>Tênis Running</td>
-                    <td>Corrida</td>
-                    <td>R$ 349,90</td>
-                </tr>
-
-                <tr>
-                    <td>Camisa Dry Fit</td>
-                    <td>Academia</td>
-                    <td>R$ 89,90</td>
-                </tr>
-
-            </tbody>
-
-        </table>
 
     </div>
 
 </div>
 
-<footer class="rodape">
-    <p>© 2026 SPORT+ - Loja Esportiva</p>
-    <p>Desenvolvido para fins educacionais</p>
-</footer>
-
 <script>
 
-fetch('/dashboard')
-.then(res => res.json())
-.then(dados => {
+// VERIFICAR LOGIN
+fetch("/session")
+.then(r=>r.json())
+.then(user=>{
 
-    document.getElementById('clientes')
-    .innerHTML = dados.clientes;
-
-    document.getElementById('produtos')
-    .innerHTML = dados.produtos;
-
-    document.getElementById('vendas')
-    .innerHTML = dados.vendas;
-
-    document.getElementById('mais-vendido')
-    .innerHTML = dados.produtoMaisVendido;
-
-})
-.catch(() => {
-
-    console.log(
-        'Dashboard ainda sem dados.'
-    );
+    if(!user){
+        location.href="login.html";
+    }
 
 });
+
+// CARREGAR DASHBOARD
+
+async function carregarDashboard(){
+
+    const resposta =
+        await fetch("/dashboard");
+
+    const dados =
+        await resposta.json();
+
+    document.getElementById("clientes")
+    .innerHTML =
+    dados.clientes;
+
+    document.getElementById("produtos")
+    .innerHTML =
+    dados.produtos;
+
+    document.getElementById("vendas")
+    .innerHTML =
+    dados.vendas;
+
+    document.getElementById("faturamento")
+    .innerHTML =
+    "R$ " +
+    Number(dados.faturamento)
+    .toFixed(2);
+
+}
+
+carregarDashboard();
+
+// LOGOUT
+
+async function logout(){
+
+    await fetch("/logout",{
+        method:"POST"
+    });
+
+    location.href="login.html";
+
+}
 
 </script>
 
