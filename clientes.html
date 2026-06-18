@@ -1,183 +1,129 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Clientes - SPORT+ PRO 2.0</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes - SPORT+ PRO 2.0</title>
 
-<style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
-}
-
-body{
-    background:#f4f6f9;
-}
-
-.sidebar{
-    position:fixed;
-    left:0;
-    top:0;
-    width:250px;
-    height:100%;
-    background:#111827;
-    padding:20px;
-}
-
-.logo{
-    color:white;
-    text-align:center;
-    font-size:28px;
-    font-weight:bold;
-    margin-bottom:30px;
-}
-
-.menu a{
-    display:block;
-    color:white;
-    text-decoration:none;
-    padding:14px;
-    margin-bottom:8px;
-    border-radius:10px;
-}
-
-.menu a:hover{
-    background:#2563eb;
-}
-
-.main{
-    margin-left:250px;
-    padding:30px;
-}
-
-.card{
-    background:white;
-    padding:20px;
-    border-radius:15px;
-    margin-bottom:20px;
-    box-shadow:0 5px 20px rgba(0,0,0,.08);
-}
-
-input{
-    width:100%;
-    padding:12px;
-    margin-bottom:10px;
-    border:1px solid #ddd;
-    border-radius:8px;
-}
-
-button{
-    border:none;
-    padding:10px 15px;
-    border-radius:8px;
-    cursor:pointer;
-}
-
-.salvar{
-    background:#2563eb;
-    color:white;
-}
-
-.editar{
-    background:#f59e0b;
-    color:white;
-}
-
-.excluir{
-    background:#dc2626;
-    color:white;
-}
-
-table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-th,td{
-    padding:12px;
-    border-bottom:1px solid #ddd;
-    text-align:left;
-}
-
-th{
-    background:#2563eb;
-    color:white;
-}
-
-</style>
-
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, Helvetica, sans-serif;
+        }
+        body{
+            background:#f4f6f9;
+        }
+        .sidebar{
+            position:fixed;
+            left:0;
+            top:0;
+            width:250px;
+            height:100%;
+            background:#111827;
+            padding:20px;
+        }
+        .logo{
+            color:white;
+            text-align:center;
+            font-size:28px;
+            font-weight:bold;
+            margin-bottom:30px;
+        }
+        .menu a{
+            display:block;
+            color:white;
+            text-decoration:none;
+            padding:14px;
+            margin-bottom:8px;
+            border-radius:10px;
+        }
+        .menu a:hover{
+            background:#2563eb;
+        }
+        .main{
+            margin-left:250px;
+            padding:30px;
+        }
+        .card{
+            background:white;
+            padding:20px;
+            border-radius:15px;
+            margin-bottom:20px;
+            box-shadow:0 5px 20px rgba(0,0,0,.08);
+        }
+        input{
+            width:100%;
+            padding:12px;
+            margin-bottom:10px;
+            border:1px solid #ddd;
+            border-radius:8px;
+        }
+        button{
+            border:none;
+            padding:10px 15px;
+            border-radius:8px;
+            cursor:pointer;
+            font-weight: bold;
+        }
+        .salvar{
+            background:#2563eb;
+            color:white;
+        }
+        .editar{
+            background:#f59e0b;
+            color:white;
+        }
+        .excluir{
+            background:#dc2626;
+            color:white;
+        }
+        table{
+            width:100%;
+            border-collapse:collapse;
+        }
+        th,td{
+            padding:12px;
+            border-bottom:1px solid #ddd;
+            text-align:left;
+        }
+        th{
+            background:#2563eb;
+            color:white;
+        }
+    </style>
 </head>
 <body>
 
 <div class="sidebar">
-
-    <div class="logo">
-        SPORT+
-    </div>
-
+    <div class="logo">SPORT+</div>
     <div class="menu">
-
         <a href="index.html">🏠 Home</a>
         <a href="clientes.html">👥 Clientes</a>
         <a href="produtos.html">📦 Produtos</a>
         <a href="vendas.html">🛒 Vendas</a>
         <a href="consultas.html">📊 Consultas</a>
-
     </div>
-
 </div>
 
 <div class="main">
-
     <h1>Clientes</h1>
 
     <div class="card">
-
-        <input
-            type="hidden"
-            id="id">
-
-        <input
-            type="text"
-            id="nome"
-            placeholder="Nome">
-
-        <input
-            type="email"
-            id="email"
-            placeholder="Email">
-
-        <input
-            type="text"
-            id="telefone"
-            placeholder="Telefone">
-
-        <button
-            class="salvar"
-            onclick="salvarCliente()">
-            Salvar Cliente
-        </button>
-
+        <input type="hidden" id="id">
+        <input type="text" id="nome" placeholder="Nome completo">
+        <input type="email" id="email" placeholder="Email">
+        <input type="text" id="telefone" placeholder="Telefone (ex: 11999999999)">
+        <button class="salvar" onclick="salvarCliente()">Salvar Cliente</button>
     </div>
 
     <div class="card">
-
-        <input
-            type="text"
-            id="busca"
-            placeholder="Pesquisar cliente"
-            onkeyup="pesquisar()">
-
+        <input type="text" id="busca" placeholder="Pesquisar cliente..." onkeyup="pesquisar()">
     </div>
 
     <div class="card">
-
         <table>
-
             <thead>
                 <tr>
                     <th>ID</th>
@@ -187,203 +133,146 @@ th{
                     <th>Ações</th>
                 </tr>
             </thead>
-
-            <tbody id="tabelaClientes">
-
-            </tbody>
-
+            <tbody id="tabelaClientes"></tbody>
         </table>
-
     </div>
-
 </div>
 
 <script>
-
-// PROTEÇÃO
+// Proteção de autenticação
 fetch("/session")
-.then(r=>r.json())
-.then(user=>{
-    if(!user){
-        location.href="login.html";
-    }
+.then(r => r.json())
+.then(user => {
+    if (!user) location.href = "login.html";
 });
 
-// LISTAR
-async function carregarClientes(){
+let clientesData = []; // Guardar dados para pesquisa
 
-    const resposta =
-        await fetch("/clientes");
+async function carregarClientes() {
+    try {
+        const resposta = await fetch("/clientes");
+        const clientes = await resposta.json();
+        
+        clientesData = clientes; // Salva para filtro
+        renderizarTabela(clientes);
+    } catch (error) {
+        console.error("Erro ao carregar clientes:", error);
+        alert("Erro ao carregar clientes.");
+    }
+}
 
-    const clientes =
-        await resposta.json();
-
+function renderizarTabela(clientes) {
     let html = "";
-
-    clientes.forEach(cliente=>{
-
+    clientes.forEach(cliente => {
         html += `
         <tr>
-
             <td>${cliente.id}</td>
             <td>${cliente.nome}</td>
-            <td>${cliente.email || ""}</td>
-            <td>${cliente.telefone || ""}</td>
-
+            <td>${cliente.email || '-'}</td>
+            <td>${cliente.telefone || '-'}</td>
             <td>
-
-                <button
-                class="editar"
-                onclick="editarCliente(
-                    ${cliente.id},
-                    '${cliente.nome}',
-                    '${cliente.email || ""}',
-                    '${cliente.telefone || ""}'
-                )">
-                Editar
+                <button class="editar" onclick="editarCliente(${cliente.id})">
+                    Editar
                 </button>
-
-                <button
-                class="excluir"
-                onclick="excluirCliente(${cliente.id})">
-                Excluir
+                <button class="excluir" onclick="excluirCliente(${cliente.id})">
+                    Excluir
                 </button>
-
             </td>
-
-        </tr>
-        `;
-
+        </tr>`;
     });
-
-    document.getElementById(
-        "tabelaClientes"
-    ).innerHTML = html;
-
+    document.getElementById("tabelaClientes").innerHTML = html;
 }
 
-// SALVAR
-async function salvarCliente(){
-
-    const id =
-        document.getElementById("id").value;
-
+// Salvar / Atualizar
+async function salvarCliente() {
+    const id = document.getElementById("id").value.trim();
     const dados = {
-
-        nome:
-        document.getElementById("nome").value,
-
-        email:
-        document.getElementById("email").value,
-
-        telefone:
-        document.getElementById("telefone").value
-
+        nome: document.getElementById("nome").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        telefone: document.getElementById("telefone").value.trim()
     };
 
-    if(id){
-
-        await fetch(
-            "/clientes/"+id,
-            {
-                method:"PUT",
-                headers:{
-                    "Content-Type":"application/json"
-                },
-                body:JSON.stringify(dados)
-            }
-        );
-
-    }else{
-
-        await fetch(
-            "/clientes",
-            {
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
-                },
-                body:JSON.stringify(dados)
-            }
-        );
-
+    if (!dados.nome) {
+        alert("O nome do cliente é obrigatório!");
+        return;
     }
 
-    limpar();
-    carregarClientes();
-
-}
-
-// EDITAR
-function editarCliente(
-    id,
-    nome,
-    email,
-    telefone
-){
-
-    document.getElementById("id").value=id;
-    document.getElementById("nome").value=nome;
-    document.getElementById("email").value=email;
-    document.getElementById("telefone").value=telefone;
-
-}
-
-// EXCLUIR
-async function excluirCliente(id){
-
-    if(!confirm(
-        "Deseja excluir este cliente?"
-    )) return;
-
-    await fetch(
-        "/clientes/"+id,
-        {
-            method:"DELETE"
+    try {
+        if (id) {
+            await fetch(`/clientes/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dados)
+            });
+        } else {
+            await fetch("/clientes", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dados)
+            });
         }
+
+        limparFormulario();
+        carregarClientes();
+        alert(id ? "Cliente atualizado com sucesso!" : "Cliente cadastrado com sucesso!");
+    } catch (error) {
+        console.error(error);
+        alert("Erro ao salvar cliente.");
+    }
+}
+
+// Editar (mais seguro)
+function editarCliente(id) {
+    const cliente = clientesData.find(c => c.id === id);
+    if (!cliente) return;
+
+    document.getElementById("id").value = cliente.id;
+    document.getElementById("nome").value = cliente.nome;
+    document.getElementById("email").value = cliente.email || "";
+    document.getElementById("telefone").value = cliente.telefone || "";
+}
+
+// Excluir
+async function excluirCliente(id) {
+    if (!confirm("Deseja realmente excluir este cliente?")) return;
+
+    try {
+        await fetch(`/clientes/${id}`, { method: "DELETE" });
+        carregarClientes();
+        alert("Cliente excluído com sucesso!");
+    } catch (error) {
+        console.error(error);
+        alert("Erro ao excluir cliente.");
+    }
+}
+
+// Pesquisa
+function pesquisar() {
+    const texto = document.getElementById("busca").value.toLowerCase().trim();
+    
+    if (texto === "") {
+        renderizarTabela(clientesData);
+        return;
+    }
+
+    const filtrados = clientesData.filter(cliente => 
+        cliente.nome.toLowerCase().includes(texto) ||
+        (cliente.email && cliente.email.toLowerCase().includes(texto))
     );
-
-    carregarClientes();
-
+    
+    renderizarTabela(filtrados);
 }
 
-// PESQUISA
-function pesquisar(){
-
-    const texto =
-        document.getElementById("busca")
-        .value.toLowerCase();
-
-    const linhas =
-        document.querySelectorAll(
-            "#tabelaClientes tr"
-        );
-
-    linhas.forEach(linha=>{
-
-        linha.style.display =
-            linha.innerText
-            .toLowerCase()
-            .includes(texto)
-            ? ""
-            : "none";
-
-    });
-
+// Limpar formulário
+function limparFormulario() {
+    document.getElementById("id").value = "";
+    document.getElementById("nome").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("telefone").value = "";
 }
 
-// LIMPAR
-function limpar(){
-
-    document.getElementById("id").value="";
-    document.getElementById("nome").value="";
-    document.getElementById("email").value="";
-    document.getElementById("telefone").value="";
-
-}
-
+// Carregar ao iniciar
 carregarClientes();
-
 </script>
 
 </body>
