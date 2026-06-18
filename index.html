@@ -1,292 +1,163 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SPORT+ PRO 2.0</title>
-
-<link rel="stylesheet" href="estilo.css">
-
-<style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
-}
-
-body{
-    background:#f4f6f9;
-}
-
-.sidebar{
-    position:fixed;
-    left:0;
-    top:0;
-    width:250px;
-    height:100%;
-    background:#111827;
-    color:white;
-    padding:20px;
-}
-
-.logo{
-    font-size:28px;
-    font-weight:bold;
-    text-align:center;
-    margin-bottom:30px;
-}
-
-.menu a{
-    display:block;
-    color:white;
-    text-decoration:none;
-    padding:14px;
-    border-radius:10px;
-    margin-bottom:8px;
-    transition:.3s;
-}
-
-.menu a:hover{
-    background:#2563eb;
-}
-
-.main{
-    margin-left:250px;
-    padding:30px;
-}
-
-.titulo{
-    font-size:30px;
-    margin-bottom:25px;
-}
-
-.cards{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:20px;
-}
-
-.card{
-    background:white;
-    padding:25px;
-    border-radius:15px;
-    box-shadow:0 5px 20px rgba(0,0,0,.08);
-}
-
-.card h3{
-    color:#555;
-    margin-bottom:10px;
-}
-
-.valor{
-    font-size:32px;
-    font-weight:bold;
-    color:#2563eb;
-}
-
-.banner{
-    margin-top:30px;
-    background:linear-gradient(135deg,#2563eb,#1e40af);
-    color:white;
-    padding:40px;
-    border-radius:20px;
-}
-
-.banner h2{
-    margin-bottom:10px;
-}
-
-.logout{
-    margin-top:30px;
-    width:100%;
-    padding:12px;
-    border:none;
-    border-radius:10px;
-    background:#dc2626;
-    color:white;
-    cursor:pointer;
-}
-
-@media(max-width:900px){
-
-.cards{
-    grid-template-columns:1fr;
-}
-
-.sidebar{
-    width:100%;
-    height:auto;
-    position:relative;
-}
-
-.main{
-    margin-left:0;
-}
-
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPORT+ PRO 2.0 - Dashboard</title>
+    
+    <link rel="stylesheet" href="estilo.css">
+    
+    <style>
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+        
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,.08);
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card h3 {
+            color: #555;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+        
+        .valor {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2563eb;
+            margin: 8px 0;
+        }
+        
+        .logout {
+            margin-top: 30px;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: #dc2626;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+    </style>
 </head>
 <body>
 
 <div class="sidebar">
-
-    <div class="logo">
-        SPORT+
-    </div>
-
+    <div class="logo">SPORT+</div>
     <div class="menu">
-
-        <a href="index.html">
-            🏠 Home
-        </a>
-
-        <a href="clientes.html">
-            👥 Clientes
-        </a>
-
-        <a href="produtos.html">
-            📦 Produtos
-        </a>
-
-        <a href="vendas.html">
-            🛒 Vendas
-        </a>
-
-        <a href="consultas.html">
-            📊 Consultas
-        </a>
-
+        <a href="index.html">🏠 Home</a>
+        <a href="clientes.html">👥 Clientes</a>
+        <a href="produtos.html">📦 Produtos</a>
+        <a href="vendas.html">🛒 Vendas</a>
+        <a href="consultas.html">📊 Consultas</a>
     </div>
-
-    <button
-        class="logout"
-        onclick="logout()">
-        Sair
-    </button>
-
+    <button class="logout" onclick="logout()">Sair</button>
 </div>
 
 <div class="main">
-
-    <h1 class="titulo">
-        Dashboard SPORT+ PRO 2.0
-    </h1>
-
-    <div class="cards">
-
+    <h1 class="titulo">Dashboard SPORT+ PRO 2.0</h1>
+    
+    <div class="cards" id="cardsContainer">
         <div class="card">
-            <h3>Clientes</h3>
-            <div
-                id="clientes"
-                class="valor">
-                0
-            </div>
+            <h3>👥 Clientes</h3>
+            <div id="clientes" class="valor">0</div>
         </div>
-
         <div class="card">
-            <h3>Produtos</h3>
-            <div
-                id="produtos"
-                class="valor">
-                0
-            </div>
+            <h3>📦 Produtos</h3>
+            <div id="produtos" class="valor">0</div>
         </div>
-
         <div class="card">
-            <h3>Vendas</h3>
-            <div
-                id="vendas"
-                class="valor">
-                0
-            </div>
+            <h3>🛒 Vendas</h3>
+            <div id="vendas" class="valor">0</div>
         </div>
-
         <div class="card">
-            <h3>Faturamento</h3>
-            <div
-                id="faturamento"
-                class="valor">
-                R$ 0
-            </div>
+            <h3>💰 Faturamento</h3>
+            <div id="faturamento" class="valor">R$ 0,00</div>
         </div>
-
     </div>
 
     <div class="banner">
-
-        <h2>
-            Bem-vindo à SPORT+ PRO 2.0
-        </h2>
-
-        <p>
-            Sistema completo para gestão de loja esportiva.
-        </p>
-
+        <h2>Bem-vindo à SPORT+ PRO 2.0</h2>
+        <p>Sistema completo para gestão de loja esportiva.</p>
     </div>
-
 </div>
 
 <script>
-
-// VERIFICAR LOGIN
-fetch("/session")
-.then(r=>r.json())
-.then(user=>{
-
-    if(!user){
-        location.href="login.html";
+// Verificar se usuário está logado
+async function verificarLogin() {
+    try {
+        const res = await fetch("/session");
+        const user = await res.json();
+        if (!user) {
+            window.location.href = "login.html";
+        }
+    } catch (err) {
+        console.error(err);
+        window.location.href = "login.html";
     }
-
-});
-
-// CARREGAR DASHBOARD
-
-async function carregarDashboard(){
-
-    const resposta =
-        await fetch("/dashboard");
-
-    const dados =
-        await resposta.json();
-
-    document.getElementById("clientes")
-    .innerHTML =
-    dados.clientes;
-
-    document.getElementById("produtos")
-    .innerHTML =
-    dados.produtos;
-
-    document.getElementById("vendas")
-    .innerHTML =
-    dados.vendas;
-
-    document.getElementById("faturamento")
-    .innerHTML =
-    "R$ " +
-    Number(dados.faturamento)
-    .toFixed(2);
-
 }
 
+// Carregar dados do Dashboard
+async function carregarDashboard() {
+    const container = document.getElementById("cardsContainer");
+    container.classList.add("loading");
+
+    try {
+        const resposta = await fetch("/dashboard");
+        
+        if (!resposta.ok) throw new Error("Falha ao buscar dados");
+
+        const dados = await resposta.json();
+
+        document.getElementById("clientes").textContent = dados.clientes || 0;
+        document.getElementById("produtos").textContent = dados.produtos || 0;
+        document.getElementById("vendas").textContent = dados.vendas || 0;
+        
+        const faturamento = Number(dados.faturamento) || 0;
+        document.getElementById("faturamento").textContent = 
+            "R$ " + faturamento.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+
+    } catch (error) {
+        console.error("Erro ao carregar dashboard:", error);
+        alert("Erro ao carregar os dados do dashboard. Verifique se o servidor está rodando.");
+    } finally {
+        container.classList.remove("loading");
+    }
+}
+
+// Logout
+async function logout() {
+    if (confirm("Deseja realmente sair?")) {
+        try {
+            await fetch("/logout", { method: "POST" });
+        } catch (e) {
+            console.error(e);
+        }
+        window.location.href = "login.html";
+    }
+}
+
+// Inicializar página
+verificarLogin();
 carregarDashboard();
-
-// LOGOUT
-
-async function logout(){
-
-    await fetch("/logout",{
-        method:"POST"
-    });
-
-    location.href="login.html";
-
-}
-
 </script>
 
 </body>
