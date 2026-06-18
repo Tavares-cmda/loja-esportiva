@@ -13,7 +13,6 @@
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 20px;
         }
-        
         .card {
             background: white;
             padding: 25px;
@@ -22,39 +21,13 @@
             text-align: center;
             transition: transform 0.2s;
         }
-        
         .card:hover {
             transform: translateY(-5px);
         }
-        
-        .card h3 {
-            color: #555;
-            margin-bottom: 12px;
-            font-size: 1.1rem;
-        }
-        
         .valor {
             font-size: 32px;
             font-weight: bold;
             color: #2563eb;
-            margin: 8px 0;
-        }
-        
-        .logout {
-            margin-top: 30px;
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            background: #dc2626;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        
-        .loading {
-            opacity: 0.7;
-            pointer-events: none;
         }
     </style>
 </head>
@@ -69,7 +42,6 @@
         <a href="vendas.html">🛒 Vendas</a>
         <a href="consultas.html">📊 Consultas</a>
     </div>
-    <button class="logout" onclick="logout()">Sair</button>
 </div>
 
 <div class="main">
@@ -101,30 +73,9 @@
 </div>
 
 <script>
-// Verificar se usuário está logado
-async function verificarLogin() {
-    try {
-        const res = await fetch("/session");
-        const user = await res.json();
-        if (!user) {
-            window.location.href = "login.html";
-        }
-    } catch (err) {
-        console.error(err);
-        window.location.href = "login.html";
-    }
-}
-
-// Carregar dados do Dashboard
 async function carregarDashboard() {
-    const container = document.getElementById("cardsContainer");
-    container.classList.add("loading");
-
     try {
         const resposta = await fetch("/dashboard");
-        
-        if (!resposta.ok) throw new Error("Falha ao buscar dados");
-
         const dados = await resposta.json();
 
         document.getElementById("clientes").textContent = dados.clientes || 0;
@@ -134,29 +85,12 @@ async function carregarDashboard() {
         const faturamento = Number(dados.faturamento) || 0;
         document.getElementById("faturamento").textContent = 
             "R$ " + faturamento.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-
     } catch (error) {
-        console.error("Erro ao carregar dashboard:", error);
-        alert("Erro ao carregar os dados do dashboard. Verifique se o servidor está rodando.");
-    } finally {
-        container.classList.remove("loading");
+        console.error(error);
+        alert("Erro ao carregar dashboard.");
     }
 }
 
-// Logout
-async function logout() {
-    if (confirm("Deseja realmente sair?")) {
-        try {
-            await fetch("/logout", { method: "POST" });
-        } catch (e) {
-            console.error(e);
-        }
-        window.location.href = "login.html";
-    }
-}
-
-// Inicializar página
-verificarLogin();
 carregarDashboard();
 </script>
 
