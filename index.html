@@ -1,98 +1,188 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SPORT+ PRO 2.0 - Dashboard</title>
-    
-    <link rel="stylesheet" href="estilo.css">
-    
-    <style>
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-        }
-        .card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,.08);
-            text-align: center;
-            transition: transform 0.2s;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-        }
-        .valor {
-            font-size: 32px;
-            font-weight: bold;
-            color: #2563eb;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SPORT+ PRO 2.1</title>
+
+<link rel="stylesheet" href="css/estilo.css">
 </head>
+
 <body>
 
-<div class="sidebar">
-    <div class="logo">SPORT+</div>
-    <div class="menu">
-        <a href="index.html">🏠 Home</a>
-        <a href="clientes.html">👥 Clientes</a>
-        <a href="produtos.html">📦 Produtos</a>
-        <a href="vendas.html">🛒 Vendas</a>
-        <a href="consultas.html">📊 Consultas</a>
-    </div>
-</div>
+<button
+id="btnTema"
+class="dark-toggle"
+title="Alternar Tema">
+🌙
+</button>
 
-<div class="main">
-    <h1 class="titulo">Dashboard SPORT+ PRO 2.0</h1>
-    
-    <div class="cards" id="cardsContainer">
-        <div class="card">
+<aside class="sidebar">
+
+    <div class="logo">
+        SPORT+
+    </div>
+
+    <nav class="menu">
+
+        <a href="index.html">
+            🏠 Home
+        </a>
+
+        <a href="clientes.html">
+            👥 Clientes
+        </a>
+
+        <a href="produtos.html">
+            📦 Produtos
+        </a>
+
+        <a href="vendas.html">
+            🛒 Vendas
+        </a>
+
+        <a href="consultas.html">
+            📊 Consultas
+        </a>
+
+    </nav>
+
+    <button
+    id="btnLogout"
+    class="btn-danger menu-btn">
+    🚪 Sair
+    </button>
+
+</aside>
+
+<main class="main">
+
+    <h1 class="titulo">
+        Dashboard SPORT+ PRO 2.1
+    </h1>
+
+    <div class="cards">
+
+        <div class="card-dashboard">
             <h3>👥 Clientes</h3>
-            <div id="clientes" class="valor">0</div>
+
+            <div
+            class="valor"
+            id="totalClientes">
+            0
+            </div>
         </div>
-        <div class="card">
+
+        <div class="card-dashboard">
             <h3>📦 Produtos</h3>
-            <div id="produtos" class="valor">0</div>
+
+            <div
+            class="valor"
+            id="totalProdutos">
+            0
+            </div>
         </div>
-        <div class="card">
+
+        <div class="card-dashboard">
             <h3>🛒 Vendas</h3>
-            <div id="vendas" class="valor">0</div>
+
+            <div
+            class="valor"
+            id="totalVendas">
+            0
+            </div>
         </div>
-        <div class="card">
+
+        <div class="card-dashboard">
             <h3>💰 Faturamento</h3>
-            <div id="faturamento" class="valor">R$ 0,00</div>
+
+            <div
+            class="valor"
+            id="totalFaturamento">
+            R$ 0,00
+            </div>
         </div>
+
     </div>
 
-    <div class="banner">
-        <h2>Bem-vindo à SPORT+ PRO 2.0</h2>
-        <p>Sistema completo para gestão de loja esportiva.</p>
-    </div>
-</div>
+    <section class="banner">
 
-<script>
-async function carregarDashboard() {
-    try {
-        const resposta = await fetch("/dashboard");
-        const dados = await resposta.json();
+        <h2>
+            Bem-vindo à SPORT+ PRO 2.1
+        </h2>
 
-        document.getElementById("clientes").textContent = dados.clientes || 0;
-        document.getElementById("produtos").textContent = dados.produtos || 0;
-        document.getElementById("vendas").textContent = dados.vendas || 0;
-        
-        const faturamento = Number(dados.faturamento) || 0;
-        document.getElementById("faturamento").textContent = 
-            "R$ " + faturamento.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-    } catch (error) {
-        console.error(error);
-        alert("Erro ao carregar dashboard.");
-    }
-}
+        <p>
+            Sistema completo para gestão de lojas esportivas.
+        </p>
 
-carregarDashboard();
-</script>
+    </section>
+
+    <br>
+
+    <section class="card">
+
+        <h2>
+            📉 Estoque Baixo
+        </h2>
+
+        <br>
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Produto</th>
+                    <th>Estoque</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="estoqueBaixo">
+
+            </tbody>
+
+        </table>
+
+    </section>
+
+    <br>
+
+    <section class="card">
+
+        <h2>
+            🏆 Produtos Mais Vendidos
+        </h2>
+
+        <br>
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Produto</th>
+                    <th>Vendidos</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="topProdutos">
+
+            </tbody>
+
+        </table>
+
+    </section>
+
+</main>
+
+<script src="js/script.js"></script>
 
 </body>
 </html>
