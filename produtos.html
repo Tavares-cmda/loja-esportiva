@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Clientes - SPORT+ PRO 2.1</title>
+<title>Produtos - SPORT+ PRO 2.1</title>
 
 <link rel="stylesheet" href="css/estilo.css">
 </head>
@@ -25,25 +25,11 @@ class="dark-toggle">
 
     <nav class="menu">
 
-        <a href="index.html">
-            🏠 Home
-        </a>
-
-        <a href="clientes.html">
-            👥 Clientes
-        </a>
-
-        <a href="produtos.html">
-            📦 Produtos
-        </a>
-
-        <a href="vendas.html">
-            🛒 Vendas
-        </a>
-
-        <a href="consultas.html">
-            📊 Consultas
-        </a>
+        <a href="index.html">🏠 Home</a>
+        <a href="clientes.html">👥 Clientes</a>
+        <a href="produtos.html">📦 Produtos</a>
+        <a href="vendas.html">🛒 Vendas</a>
+        <a href="consultas.html">📊 Consultas</a>
 
     </nav>
 
@@ -58,46 +44,70 @@ class="dark-toggle">
 <main class="main">
 
     <h1 class="titulo">
-        Gestão de Clientes
+        Gestão de Produtos
     </h1>
 
-    <!-- FORMULÁRIO -->
+    <!-- CADASTRO -->
 
     <section class="card">
 
         <h2>
-            ➕ Novo Cliente
+            ➕ Novo Produto
         </h2>
 
         <br>
 
         <input
         type="hidden"
-        id="clienteId">
+        id="produtoId">
 
         <input
         type="text"
-        id="clienteNome"
-        placeholder="Nome do Cliente">
+        id="produtoNome"
+        placeholder="Nome do Produto">
+
+        <select id="produtoCategoria">
+
+            <option value="">
+                Selecione uma categoria
+            </option>
+
+            <option>Chuteira de Campo</option>
+            <option>Chuteira Society</option>
+            <option>Chuteira Futsal</option>
+            <option>Bola Oficial</option>
+            <option>Bola de Basquete</option>
+            <option>Tênis de Corrida</option>
+            <option>Camisa Dry Fit</option>
+            <option>Luva de Academia</option>
+            <option>Óculos de Natação</option>
+
+        </select>
 
         <input
-        type="email"
-        id="clienteEmail"
-        placeholder="E-mail">
+        type="number"
+        step="0.01"
+        id="produtoPreco"
+        placeholder="Preço">
+
+        <input
+        type="number"
+        id="produtoEstoque"
+        placeholder="Quantidade em Estoque">
 
         <input
         type="text"
-        id="clienteTelefone"
-        placeholder="Telefone">
+        id="produtoImagem"
+        placeholder="URL da Imagem">
 
         <button
-        id="btnSalvarCliente"
+        id="btnSalvarProduto"
         class="btn-primary">
-        💾 Salvar Cliente
+        💾 Salvar Produto
         </button>
 
         <button
-        id="btnCancelarCliente"
+        id="btnCancelarProduto"
         class="btn-warning">
         ❌ Cancelar Edição
         </button>
@@ -109,24 +119,53 @@ class="dark-toggle">
     <section class="card">
 
         <h2>
-            🔍 Pesquisar Cliente
+            🔍 Pesquisar Produto
         </h2>
 
         <br>
 
         <input
         type="text"
-        id="pesquisaCliente"
-        placeholder="Digite o nome, email ou telefone">
+        id="pesquisaProduto"
+        placeholder="Digite o nome ou categoria">
 
     </section>
 
-    <!-- TABELA -->
+    <!-- ESTOQUE BAIXO -->
 
     <section class="card">
 
         <h2>
-            👥 Clientes Cadastrados
+            ⚠️ Estoque Baixo
+        </h2>
+
+        <br>
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Produto</th>
+                    <th>Estoque</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="tabelaEstoqueBaixo">
+
+            </tbody>
+
+        </table>
+
+    </section>
+
+    <!-- PRODUTOS -->
+
+    <section class="card">
+
+        <h2>
+            📦 Produtos Cadastrados
         </h2>
 
         <br>
@@ -137,17 +176,18 @@ class="dark-toggle">
 
                 <tr>
 
-                    <th>ID</th>
-                    <th>Nome</th>
-                    <th>E-mail</th>
-                    <th>Telefone</th>
+                    <th>Imagem</th>
+                    <th>Produto</th>
+                    <th>Categoria</th>
+                    <th>Preço</th>
+                    <th>Estoque</th>
                     <th>Ações</th>
 
                 </tr>
 
             </thead>
 
-            <tbody id="tabelaClientes">
+            <tbody id="tabelaProdutos">
 
             </tbody>
 
@@ -162,11 +202,25 @@ class="dark-toggle">
         <div class="card-dashboard">
 
             <h3>
-                Total de Clientes
+                Total de Produtos
             </h3>
 
             <div
-            id="estatisticaClientes"
+            id="estatisticaProdutos"
+            class="valor">
+            0
+            </div>
+
+        </div>
+
+        <div class="card-dashboard">
+
+            <h3>
+                Produtos com Estoque Baixo
+            </h3>
+
+            <div
+            id="estatisticaEstoqueBaixo"
             class="valor">
             0
             </div>
