@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Consultas - SPORT+ PRO 2.1</title>
+
+<link rel="stylesheet" href="css/estilo.css">
+</head>
+
+<body>
+
+<button
+id="btnTema"
+class="dark-toggle">
+🌙
+</button>
+
+<aside class="sidebar">
+
+    <div class="logo">
+        SPORT+
+    </div>
+
+    <nav class="menu">
+
+        <a href="index.html">🏠 Home</a>
+        <a href="clientes.html">👥 Clientes</a>
+        <a href="produtos.html">📦 Produtos</a>
+        <a href="vendas.html">🛒 Vendas</a>
+        <a href="consultas.html">📊 Consultas</a>
+
+    </nav>
+
+    <button
+    id="btnLogout"
+    class="btn-danger menu-btn">
+    🚪 Sair
+    </button>
+
+</aside>
+
+<main class="main">
+
+    <h1 class="titulo">
+        Consultas e Relatórios
+    </h1>
+
+    <!-- FILTROS -->
+
+    <section class="card">
+
+        <h2>
+            🔍 Filtrar Vendas
+        </h2>
+
+        <br>
+
+        <input
+        type="date"
+        id="filtroInicio">
+
+        <input
+        type="date"
+        id="filtroFim">
+
+        <button
+        id="btnFiltrarVendas"
+        class="btn-primary">
+        Buscar
+        </button>
+
+    </section>
+
+    <!-- ESTATÍSTICAS -->
+
+    <section class="cards">
+
+        <div class="card-dashboard">
+
+            <h3>Total de Vendas</h3>
+
+            <div
+            id="estatisticaVendas"
+            class="valor">
+            0
+            </div>
+
+        </div>
+
+        <div class="card-dashboard">
+
+            <h3>Faturamento</h3>
+
+            <div
+            id="estatisticaFaturamento"
+            class="valor">
+            R$ 0,00
+            </div>
+
+        </div>
+
+    </section>
+
+    <br>
+
+    <!-- HISTÓRICO -->
+
+    <section class="card">
+
+        <h2>
+            📋 Histórico de Vendas
+        </h2>
+
+        <br>
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    <th>Total</th>
+                    <th>Data</th>
+                    <th>Ações</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="tabelaConsultas">
+
+            </tbody>
+
+        </table>
+
+    </section>
+
+</main>
+
+<!-- MODAL -->
+
+<div
+class="modal"
+id="modalVenda">
+
+<div class="modal-content">
+
+<span
+class="fechar"
+id="fecharModal">
+×
+</span>
+
+<h2>
+Detalhes da Venda
+</h2>
+
+<br>
+
+<div id="detalhesVenda">
+
+</div>
+
+</div>
+
+</div>
+
+<script src="js/script.js"></script>
+
+</body>
+</html>
