@@ -3,423 +3,178 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vendas - SPORT+ PRO 2.0</title>
 
-<style>
+<title>Vendas - SPORT+ PRO 2.1</title>
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial,sans-serif;
-}
-
-body{
-    background:#f4f6f9;
-}
-
-.sidebar{
-    position:fixed;
-    left:0;
-    top:0;
-    width:250px;
-    height:100%;
-    background:#111827;
-    padding:20px;
-}
-
-.logo{
-    color:white;
-    text-align:center;
-    font-size:28px;
-    font-weight:bold;
-    margin-bottom:30px;
-}
-
-.menu a{
-    display:block;
-    color:white;
-    text-decoration:none;
-    padding:14px;
-    margin-bottom:8px;
-    border-radius:10px;
-}
-
-.menu a:hover{
-    background:#2563eb;
-}
-
-.main{
-    margin-left:250px;
-    padding:30px;
-}
-
-.card{
-    background:white;
-    padding:20px;
-    border-radius:15px;
-    margin-bottom:20px;
-    box-shadow:0 5px 20px rgba(0,0,0,.08);
-}
-
-select,input{
-    width:100%;
-    padding:12px;
-    margin-bottom:10px;
-    border:1px solid #ddd;
-    border-radius:8px;
-}
-
-button{
-    border:none;
-    padding:10px 15px;
-    border-radius:8px;
-    cursor:pointer;
-}
-
-.adicionar{
-    background:#2563eb;
-    color:white;
-}
-
-.finalizar{
-    background:#16a34a;
-    color:white;
-}
-
-.remover{
-    background:#dc2626;
-    color:white;
-}
-
-table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-th,td{
-    padding:12px;
-    border-bottom:1px solid #ddd;
-}
-
-th{
-    background:#2563eb;
-    color:white;
-}
-
-.total{
-    font-size:28px;
-    font-weight:bold;
-    color:#16a34a;
-    margin-top:15px;
-}
-
-</style>
+<link rel="stylesheet" href="css/estilo.css">
 </head>
+
 <body>
 
-<div class="sidebar">
+<button
+id="btnTema"
+class="dark-toggle">
+🌙
+</button>
 
-    <div class="logo">SPORT+</div>
+<aside class="sidebar">
 
-    <div class="menu">
+    <div class="logo">
+        SPORT+
+    </div>
+
+    <nav class="menu">
+
         <a href="index.html">🏠 Home</a>
         <a href="clientes.html">👥 Clientes</a>
         <a href="produtos.html">📦 Produtos</a>
         <a href="vendas.html">🛒 Vendas</a>
         <a href="consultas.html">📊 Consultas</a>
-    </div>
 
-</div>
+    </nav>
 
-<div class="main">
+    <button
+    id="btnLogout"
+    class="btn-danger menu-btn">
+    🚪 Sair
+    </button>
 
-<h1>Nova Venda</h1>
+</aside>
 
-<div class="card">
+<main class="main">
 
-<select id="cliente"></select>
+    <h1 class="titulo">
+        Nova Venda
+    </h1>
 
-<select id="produto"></select>
+    <!-- SELEÇÃO -->
 
-<input
-type="number"
-id="quantidade"
-placeholder="Quantidade"
-value="1"
-min="1">
+    <section class="card">
 
-<button
-class="adicionar"
-onclick="adicionarCarrinho()">
-Adicionar ao Carrinho
-</button>
+        <h2>
+            🛒 Registrar Venda
+        </h2>
 
-</div>
+        <br>
 
-<div class="card">
+        <select id="vendaCliente">
+            <option value="">
+                Selecione um cliente
+            </option>
+        </select>
 
-<table>
+        <select id="vendaProduto">
+            <option value="">
+                Selecione um produto
+            </option>
+        </select>
 
-<thead>
-<tr>
-<th>Produto</th>
-<th>Preço</th>
-<th>Qtd</th>
-<th>Subtotal</th>
-<th>Ações</th>
-</tr>
-</thead>
-
-<tbody id="carrinho"></tbody>
-
-</table>
-
-<div
-class="total"
-id="total">
-R$ 0,00
-</div>
-
-<br>
-
-<button
-class="finalizar"
-onclick="finalizarVenda()">
-Finalizar Venda
-</button>
-
-</div>
-
-</div>
-
-<script>
-
-let produtos = [];
-let carrinho = [];
-
-fetch("/session")
-.then(r=>r.json())
-.then(user=>{
-    if(!user){
-        location.href="login.html";
-    }
-});
-
-async function carregarClientes(){
-
-    const resposta =
-        await fetch("/clientes");
-
-    const clientes =
-        await resposta.json();
-
-    let html = "";
-
-    clientes.forEach(cliente=>{
-
-        html += `
-        <option value="${cliente.id}">
-            ${cliente.nome}
-        </option>
-        `;
-
-    });
-
-    document.getElementById(
-        "cliente"
-    ).innerHTML = html;
-
-}
-
-async function carregarProdutos(){
-
-    const resposta =
-        await fetch("/produtos");
-
-    produtos =
-        await resposta.json();
-
-    let html = "";
-
-    produtos.forEach(produto=>{
-
-        html += `
-        <option value="${produto.id}">
-            ${produto.nome}
-            - R$ ${produto.preco}
-        </option>
-        `;
-
-    });
-
-    document.getElementById(
-        "produto"
-    ).innerHTML = html;
-
-}
-
-function adicionarCarrinho(){
-
-    const produtoId =
-        Number(
-            document.getElementById("produto").value
-        );
-
-    const quantidade =
-        Number(
-            document.getElementById("quantidade").value
-        );
-
-    const produto =
-        produtos.find(
-            p=>p.id===produtoId
-        );
-
-    if(!produto) return;
-
-    carrinho.push({
-
-        produto_id:
-        produto.id,
-
-        nome:
-        produto.nome,
-
-        preco:
-        Number(produto.preco),
-
-        quantidade:
-        quantidade
-
-    });
-
-    atualizarCarrinho();
-
-}
-
-function atualizarCarrinho(){
-
-    let html = "";
-    let total = 0;
-
-    carrinho.forEach((item,index)=>{
-
-        const subtotal =
-            item.preco *
-            item.quantidade;
-
-        total += subtotal;
-
-        html += `
-        <tr>
-
-        <td>${item.nome}</td>
-
-        <td>
-        R$ ${item.preco.toFixed(2)}
-        </td>
-
-        <td>
-        ${item.quantidade}
-        </td>
-
-        <td>
-        R$ ${subtotal.toFixed(2)}
-        </td>
-
-        <td>
+        <input
+        type="number"
+        id="vendaQuantidade"
+        min="1"
+        value="1"
+        placeholder="Quantidade">
 
         <button
-        class="remover"
-        onclick="removerItem(${index})">
-        Remover
+        id="btnAdicionarCarrinho"
+        class="btn-primary">
+        ➕ Adicionar ao Carrinho
         </button>
 
-        </td>
+    </section>
 
-        </tr>
-        `;
+    <!-- CARRINHO -->
 
-    });
+    <section class="card">
 
-    document.getElementById(
-        "carrinho"
-    ).innerHTML = html;
+        <h2>
+            🧾 Carrinho
+        </h2>
 
-    document.getElementById(
-        "total"
-    ).innerHTML =
-    "R$ " +
-    total.toFixed(2);
+        <br>
 
-}
+        <table>
 
-function removerItem(index){
+            <thead>
 
-    carrinho.splice(index,1);
+                <tr>
 
-    atualizarCarrinho();
+                    <th>Produto</th>
+                    <th>Preço</th>
+                    <th>Qtd</th>
+                    <th>Subtotal</th>
+                    <th>Ações</th>
 
-}
+                </tr>
 
-async function finalizarVenda(){
+            </thead>
 
-    if(carrinho.length===0){
+            <tbody id="tabelaCarrinho">
 
-        alert(
-            "Carrinho vazio"
-        );
+            </tbody>
 
-        return;
+        </table>
 
-    }
+        <br>
 
-    const venda = {
+        <h2 id="totalCarrinho">
+            Total: R$ 0,00
+        </h2>
 
-        cliente_id:
-        document.getElementById(
-            "cliente"
-        ).value,
+        <br>
 
-        itens:
-        carrinho
+        <button
+        id="btnFinalizarVenda"
+        class="btn-success">
+        ✅ Finalizar Venda
+        </button>
 
-    };
+        <button
+        id="btnLimparCarrinho"
+        class="btn-danger">
+        🗑️ Limpar Carrinho
+        </button>
 
-    const resposta =
-        await fetch(
-            "/vendas",
-            {
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
-                },
-                body:JSON.stringify(venda)
-            }
-        );
+    </section>
 
-    const dados =
-        await resposta.json();
+    <!-- RESUMO -->
 
-    if(dados.success){
+    <section class="cards">
 
-        alert(
-            "Venda realizada com sucesso!"
-        );
+        <div class="card-dashboard">
 
-        carrinho = [];
+            <h3>
+                Itens no Carrinho
+            </h3>
 
-        atualizarCarrinho();
+            <div
+            id="estatisticaItensCarrinho"
+            class="valor">
+            0
+            </div>
 
-    }
+        </div>
 
-}
+        <div class="card-dashboard">
 
-carregarClientes();
-carregarProdutos();
+            <h3>
+                Valor Total
+            </h3>
 
-</script>
+            <div
+            id="estatisticaValorCarrinho"
+            class="valor">
+            R$ 0,00
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+<script src="js/script.js"></script>
 
 </body>
 </html>
