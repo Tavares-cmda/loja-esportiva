@@ -1,279 +1,183 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clientes - SPORT+ PRO 2.0</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:Arial, Helvetica, sans-serif;
-        }
-        body{
-            background:#f4f6f9;
-        }
-        .sidebar{
-            position:fixed;
-            left:0;
-            top:0;
-            width:250px;
-            height:100%;
-            background:#111827;
-            padding:20px;
-        }
-        .logo{
-            color:white;
-            text-align:center;
-            font-size:28px;
-            font-weight:bold;
-            margin-bottom:30px;
-        }
-        .menu a{
-            display:block;
-            color:white;
-            text-decoration:none;
-            padding:14px;
-            margin-bottom:8px;
-            border-radius:10px;
-        }
-        .menu a:hover{
-            background:#2563eb;
-        }
-        .main{
-            margin-left:250px;
-            padding:30px;
-        }
-        .card{
-            background:white;
-            padding:20px;
-            border-radius:15px;
-            margin-bottom:20px;
-            box-shadow:0 5px 20px rgba(0,0,0,.08);
-        }
-        input{
-            width:100%;
-            padding:12px;
-            margin-bottom:10px;
-            border:1px solid #ddd;
-            border-radius:8px;
-        }
-        button{
-            border:none;
-            padding:10px 15px;
-            border-radius:8px;
-            cursor:pointer;
-            font-weight: bold;
-        }
-        .salvar{
-            background:#2563eb;
-            color:white;
-        }
-        .editar{
-            background:#f59e0b;
-            color:white;
-        }
-        .excluir{
-            background:#dc2626;
-            color:white;
-        }
-        table{
-            width:100%;
-            border-collapse:collapse;
-        }
-        th,td{
-            padding:12px;
-            border-bottom:1px solid #ddd;
-            text-align:left;
-        }
-        th{
-            background:#2563eb;
-            color:white;
-        }
-    </style>
+<title>Clientes - SPORT+ PRO 2.1</title>
+
+<link rel="stylesheet" href="css/estilo.css">
 </head>
+
 <body>
 
-<div class="sidebar">
-    <div class="logo">SPORT+</div>
-    <div class="menu">
-        <a href="index.html">🏠 Home</a>
-        <a href="clientes.html">👥 Clientes</a>
-        <a href="produtos.html">📦 Produtos</a>
-        <a href="vendas.html">🛒 Vendas</a>
-        <a href="consultas.html">📊 Consultas</a>
-    </div>
-</div>
+<button
+id="btnTema"
+class="dark-toggle">
+🌙
+</button>
 
-<div class="main">
-    <h1>Clientes</h1>
+<aside class="sidebar">
 
-    <div class="card">
-        <input type="hidden" id="id">
-        <input type="text" id="nome" placeholder="Nome completo">
-        <input type="email" id="email" placeholder="Email">
-        <input type="text" id="telefone" placeholder="Telefone (ex: 11999999999)">
-        <button class="salvar" onclick="salvarCliente()">Salvar Cliente</button>
+    <div class="logo">
+        SPORT+
     </div>
 
-    <div class="card">
-        <input type="text" id="busca" placeholder="Pesquisar cliente..." onkeyup="pesquisar()">
-    </div>
+    <nav class="menu">
 
-    <div class="card">
+        <a href="index.html">
+            🏠 Home
+        </a>
+
+        <a href="clientes.html">
+            👥 Clientes
+        </a>
+
+        <a href="produtos.html">
+            📦 Produtos
+        </a>
+
+        <a href="vendas.html">
+            🛒 Vendas
+        </a>
+
+        <a href="consultas.html">
+            📊 Consultas
+        </a>
+
+    </nav>
+
+    <button
+    id="btnLogout"
+    class="btn-danger menu-btn">
+    🚪 Sair
+    </button>
+
+</aside>
+
+<main class="main">
+
+    <h1 class="titulo">
+        Gestão de Clientes
+    </h1>
+
+    <!-- FORMULÁRIO -->
+
+    <section class="card">
+
+        <h2>
+            ➕ Novo Cliente
+        </h2>
+
+        <br>
+
+        <input
+        type="hidden"
+        id="clienteId">
+
+        <input
+        type="text"
+        id="clienteNome"
+        placeholder="Nome do Cliente">
+
+        <input
+        type="email"
+        id="clienteEmail"
+        placeholder="E-mail">
+
+        <input
+        type="text"
+        id="clienteTelefone"
+        placeholder="Telefone">
+
+        <button
+        id="btnSalvarCliente"
+        class="btn-primary">
+        💾 Salvar Cliente
+        </button>
+
+        <button
+        id="btnCancelarCliente"
+        class="btn-warning">
+        ❌ Cancelar Edição
+        </button>
+
+    </section>
+
+    <!-- PESQUISA -->
+
+    <section class="card">
+
+        <h2>
+            🔍 Pesquisar Cliente
+        </h2>
+
+        <br>
+
+        <input
+        type="text"
+        id="pesquisaCliente"
+        placeholder="Digite o nome, email ou telefone">
+
+    </section>
+
+    <!-- TABELA -->
+
+    <section class="card">
+
+        <h2>
+            👥 Clientes Cadastrados
+        </h2>
+
+        <br>
+
         <table>
+
             <thead>
+
                 <tr>
+
                     <th>ID</th>
                     <th>Nome</th>
-                    <th>Email</th>
+                    <th>E-mail</th>
                     <th>Telefone</th>
                     <th>Ações</th>
+
                 </tr>
+
             </thead>
-            <tbody id="tabelaClientes"></tbody>
+
+            <tbody id="tabelaClientes">
+
+            </tbody>
+
         </table>
-    </div>
-</div>
 
-<script>
-// Proteção de autenticação
-fetch("/session")
-.then(r => r.json())
-.then(user => {
-    if (!user) location.href = "login.html";
-});
+    </section>
 
-let clientesData = []; // Guardar dados para pesquisa
+    <!-- ESTATÍSTICAS -->
 
-async function carregarClientes() {
-    try {
-        const resposta = await fetch("/clientes");
-        const clientes = await resposta.json();
-        
-        clientesData = clientes; // Salva para filtro
-        renderizarTabela(clientes);
-    } catch (error) {
-        console.error("Erro ao carregar clientes:", error);
-        alert("Erro ao carregar clientes.");
-    }
-}
+    <section class="cards">
 
-function renderizarTabela(clientes) {
-    let html = "";
-    clientes.forEach(cliente => {
-        html += `
-        <tr>
-            <td>${cliente.id}</td>
-            <td>${cliente.nome}</td>
-            <td>${cliente.email || '-'}</td>
-            <td>${cliente.telefone || '-'}</td>
-            <td>
-                <button class="editar" onclick="editarCliente(${cliente.id})">
-                    Editar
-                </button>
-                <button class="excluir" onclick="excluirCliente(${cliente.id})">
-                    Excluir
-                </button>
-            </td>
-        </tr>`;
-    });
-    document.getElementById("tabelaClientes").innerHTML = html;
-}
+        <div class="card-dashboard">
 
-// Salvar / Atualizar
-async function salvarCliente() {
-    const id = document.getElementById("id").value.trim();
-    const dados = {
-        nome: document.getElementById("nome").value.trim(),
-        email: document.getElementById("email").value.trim(),
-        telefone: document.getElementById("telefone").value.trim()
-    };
+            <h3>
+                Total de Clientes
+            </h3>
 
-    if (!dados.nome) {
-        alert("O nome do cliente é obrigatório!");
-        return;
-    }
+            <div
+            id="estatisticaClientes"
+            class="valor">
+            0
+            </div>
 
-    try {
-        if (id) {
-            await fetch(`/clientes/${id}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(dados)
-            });
-        } else {
-            await fetch("/clientes", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(dados)
-            });
-        }
+        </div>
 
-        limparFormulario();
-        carregarClientes();
-        alert(id ? "Cliente atualizado com sucesso!" : "Cliente cadastrado com sucesso!");
-    } catch (error) {
-        console.error(error);
-        alert("Erro ao salvar cliente.");
-    }
-}
+    </section>
 
-// Editar (mais seguro)
-function editarCliente(id) {
-    const cliente = clientesData.find(c => c.id === id);
-    if (!cliente) return;
+</main>
 
-    document.getElementById("id").value = cliente.id;
-    document.getElementById("nome").value = cliente.nome;
-    document.getElementById("email").value = cliente.email || "";
-    document.getElementById("telefone").value = cliente.telefone || "";
-}
-
-// Excluir
-async function excluirCliente(id) {
-    if (!confirm("Deseja realmente excluir este cliente?")) return;
-
-    try {
-        await fetch(`/clientes/${id}`, { method: "DELETE" });
-        carregarClientes();
-        alert("Cliente excluído com sucesso!");
-    } catch (error) {
-        console.error(error);
-        alert("Erro ao excluir cliente.");
-    }
-}
-
-// Pesquisa
-function pesquisar() {
-    const texto = document.getElementById("busca").value.toLowerCase().trim();
-    
-    if (texto === "") {
-        renderizarTabela(clientesData);
-        return;
-    }
-
-    const filtrados = clientesData.filter(cliente => 
-        cliente.nome.toLowerCase().includes(texto) ||
-        (cliente.email && cliente.email.toLowerCase().includes(texto))
-    );
-    
-    renderizarTabela(filtrados);
-}
-
-// Limpar formulário
-function limparFormulario() {
-    document.getElementById("id").value = "";
-    document.getElementById("nome").value = "";
-    document.getElementById("email").value = "";
-    document.getElementById("telefone").value = "";
-}
-
-// Carregar ao iniciar
-carregarClientes();
-</script>
+<script src="js/script.js"></script>
 
 </body>
 </html>
