@@ -1,332 +1,2165 @@
-const express = require("express");
-const session = require("express-session");
-const SQLiteStore = require("connect-sqlite3")(session);
-const sqlite3 = require("sqlite3").verbose();
-const bcrypt = require("bcryptjs");
-const path = require("path");
-const fs = require("fs");
-const multer = require("multer");
+// =====================================
+// SPORT+ PRO 2.1
+// script.js
+// PARTE 1
+// =====================================
 
-const app = express();
-const PORT = 3000;
+// =====================================
+// UTILITÁRIOS
+// =====================================
 
-// ======================
-// MIDDLEWARES
-// ======================
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "public")));
+function existe(id){
+    return document.getElementById(id);
+}
 
-app.use(
-  session({
-    store: new SQLiteStore({
-      db: "sessions.db",
-      dir: "./"
-    }),
-    secret: "sportpluspro2026",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      maxAge: 1000 * 60 * 60 * 24 // 24 horas
+function dinheiro(valor){
+
+    return Number(valor || 0)
+    .toLocaleString(
+        "pt-BR",
+        {
+            style:"currency",
+            currency:"BRL"
+        }
+    );
+
+}
+
+// =====================================
+// VERIFICAR SESSÃO
+// =====================================
+
+async function verificarSessao(){
+
+    try{
+
+        const resposta =
+        await fetch("/session");
+
+        if(!resposta.ok){
+            location.href = "login.html";
+            return;
+        }
+
+        const usuario =
+        await resposta.json();
+
+        if(!usuario){
+
+            if(
+                !location.pathname
+                .includes("login")
+            ){
+
+                location.href =
+                "login.html";
+
+            }
+
+        }
+
+    }catch{
+
+        if(
+            !location.pathname
+            .includes("login")
+        ){
+
+            location.href =
+            "login.html";
+
+        }
+
     }
-  })
-);
 
-// ======================
-// BANCO DE DADOS
-// ======================
-const db = new sqlite3.Database("./sportplus.db", (err) => {
-  if (err) {
-    console.error("Erro ao abrir banco:", err.message);
-  } else {
-    console.log("✅ Banco de dados conectado.");
-  }
-});
-
-// ======================
-// CRIAR TABELAS
-// ======================
-db.serialize(() => {
-  db.run(`
-    CREATE TABLE IF NOT EXISTS usuarios (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      usuario TEXT UNIQUE,
-      senha TEXT
-    )
-  `);
-
-  db.run(`
-    CREATE TABLE IF NOT EXISTS clientes (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      nome TEXT NOT NULL,
-      email TEXT,
-      telefone TEXT,
-      criado_em DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
-
-  db.run(`
-    CREATE TABLE IF NOT EXISTS produtos (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      nome TEXT NOT NULL,
-      categoria TEXT,
-      preco REAL,
-      estoque INTEGER,
-      imagem TEXT
-    )
-  `);
-
-  db.run(`
-    CREATE TABLE IF NOT EXISTS vendas (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      cliente_id INTEGER,
-      total REAL,
-      data_venda DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
-
-  db.run(`
-    CREATE TABLE IF NOT EXISTS itens_venda (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      venda_id INTEGER,
-      produto_id INTEGER,
-      quantidade INTEGER,
-      preco REAL
-    )
-  `);
-});
-
-// ======================
-// CRIAR ADMIN (melhorado)
-// ======================
-async function criarAdmin() {
-  return new Promise((resolve) => {
-    db.get("SELECT * FROM usuarios WHERE usuario = ?", ["admin"], async (err, row) => {
-      if (row) return resolve();
-
-      const senhaHash = await bcrypt.hash("admin123", 10);
-      db.run("INSERT INTO usuarios(usuario, senha) VALUES (?, ?)", ["admin", senhaHash], () => {
-        console.log("👤 Usuário admin criado com sucesso (admin / admin123)");
-        resolve();
-      });
-    });
-  });
 }
 
-// ======================
-// MIDDLEWARE DE AUTENTICAÇÃO
-// ======================
-function auth(req, res, next) {
-  if (!req.session.usuario) {
-    return res.status(401).json({ erro: "Não autorizado. Faça login." });
-  }
-  next();
+// =====================================
+// LOGOUT
+// =====================================
+
+async function logout(){
+
+    try{
+
+        await fetch(
+            "/logout",
+            {
+                method:"POST"
+            }
+        );
+
+    }catch{}
+
+    location.href =
+    "login.html";
+
 }
 
-// ======================
-// UPLOAD DE IMAGENS
-// ======================
-if (!fs.existsSync("./uploads")) {
-  fs.mkdirSync("./uploads");
+// =====================================
+// EVENTO LOGOUT
+// =====================================
+
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
+
+    const btnLogout =
+    existe("btnLogout");
+
+    if(btnLogout){
+
+        btnLogout
+        .addEventListener(
+            "click",
+            logout
+        );
+
+    }
+
+});
+
+// =====================================
+// DARK MODE
+// =====================================
+
+function carregarTema(){
+
+    const tema =
+    localStorage.getItem(
+        "tema"
+    );
+
+    if(
+        tema === "dark"
+    ){
+
+        document.body
+        .classList
+        .add("dark");
+
+    }
+
 }
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "./uploads"),
-  filename: (req, file, cb) => {
-    const nome = Date.now() + "-" + file.originalname.replace(/\s/g, "_");
-    cb(null, nome);
-  }
+function alternarTema(){
+
+    document.body
+    .classList
+    .toggle("dark");
+
+    const escuro =
+    document.body
+    .classList
+    .contains("dark");
+
+    localStorage.setItem(
+        "tema",
+        escuro
+        ? "dark"
+        : "light"
+    );
+
+}
+
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
+
+    carregarTema();
+
+    const btnTema =
+    existe("btnTema");
+
+    if(btnTema){
+
+        btnTema
+        .addEventListener(
+            "click",
+            alternarTema
+        );
+
+    }
+
 });
 
-const upload = multer({ storage });
-
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
-// ======================
-// ROTAS
-// ======================
-
-// Login
-app.post("/login", (req, res) => {
-  const { usuario, senha } = req.body;
-
-  db.get("SELECT * FROM usuarios WHERE usuario = ?", [usuario], async (err, row) => {
-    if (err) return res.status(500).json({ success: false, message: "Erro interno" });
-    if (!row) return res.json({ success: false, message: "Usuário não encontrado" });
-
-    const senhaValida = await bcrypt.compare(senha, row.senha);
-    if (!senhaValida) return res.json({ success: false, message: "Senha incorreta" });
-
-    req.session.usuario = { id: row.id, usuario: row.usuario };
-    res.json({ success: true });
-  });
-});
-
-// Logout
-app.post("/logout", (req, res) => {
-  req.session.destroy(() => {
-    res.json({ success: true });
-  });
-});
-
-// Session
-app.get("/session", (req, res) => {
-  res.json(req.session.usuario || null);
-});
-
-// ======================
-// CLIENTES
-// ======================
-app.get("/clientes", auth, (req, res) => {
-  db.all("SELECT * FROM clientes ORDER BY id DESC", [], (err, rows) => {
-    if (err) return res.status(500).json(err);
-    res.json(rows);
-  });
-});
-
-app.post("/clientes", auth, (req, res) => {
-  const { nome, email, telefone } = req.body;
-  db.run("INSERT INTO clientes (nome, email, telefone) VALUES (?,?,?)", [nome, email, telefone], function(err) {
-    if (err) return res.status(500).json(err);
-    res.json({ success: true, id: this.lastID });
-  });
-});
-
-app.put("/clientes/:id", auth, (req, res) => {
-  const { nome, email, telefone } = req.body;
-  db.run("UPDATE clientes SET nome=?, email=?, telefone=? WHERE id=?", [nome, email, telefone, req.params.id], function(err) {
-    if (err) return res.status(500).json(err);
-    res.json({ success: true });
-  });
-});
-
-app.delete("/clientes/:id", auth, (req, res) => {
-  db.run("DELETE FROM clientes WHERE id=?", [req.params.id], function(err) {
-    if (err) return res.status(500).json(err);
-    res.json({ success: true });
-  });
-});
-
-// ======================
-// PRODUTOS
-// ======================
-app.get("/produtos", auth, (req, res) => {
-  db.all("SELECT * FROM produtos ORDER BY id DESC", [], (err, rows) => {
-    if (err) return res.status(500).json(err);
-    res.json(rows);
-  });
-});
-
-app.post("/produtos", auth, (req, res) => {
-  const { nome, categoria, preco, estoque, imagem } = req.body;
-  db.run("INSERT INTO produtos (nome, categoria, preco, estoque, imagem) VALUES (?,?,?,?,?)",
-    [nome, categoria, preco, estoque, imagem], function(err) {
-      if (err) return res.status(500).json(err);
-      res.json({ success: true, id: this.lastID });
-    });
-});
-
-app.put("/produtos/:id", auth, (req, res) => {
-  const { nome, categoria, preco, estoque, imagem } = req.body;
-  db.run("UPDATE produtos SET nome=?, categoria=?, preco=?, estoque=?, imagem=? WHERE id=?",
-    [nome, categoria, preco, estoque, imagem, req.params.id], function(err) {
-      if (err) return res.status(500).json(err);
-      res.json({ success: true });
-    });
-});
-
-app.delete("/produtos/:id", auth, (req, res) => {
-  db.run("DELETE FROM produtos WHERE id=?", [req.params.id], function(err) {
-    if (err) return res.status(500).json(err);
-    res.json({ success: true });
-  });
-});
-
-// ======================
-// VENDAS
-// ======================
-app.post("/vendas", auth, (req, res) => {
-  const { cliente_id, itens } = req.body;
-
-  if (!Array.isArray(itens) || itens.length === 0) {
-    return res.status(400).json({ success: false, message: "Carrinho vazio" });
-  }
-
-  let totalVenda = 0;
-  itens.forEach(item => {
-    totalVenda += Number(item.preco) * Number(item.quantidade);
-  });
-
-  db.run("INSERT INTO vendas (cliente_id, total) VALUES (?,?)", [cliente_id, totalVenda], function(err) {
-    if (err) return res.status(500).json(err);
-
-    const vendaId = this.lastID;
-
-    itens.forEach(item => {
-      db.run("INSERT INTO itens_venda (venda_id, produto_id, quantidade, preco) VALUES (?,?,?,?)",
-        [vendaId, item.produto_id, item.quantidade, item.preco]);
-
-      // Baixar estoque
-      db.run("UPDATE produtos SET estoque = estoque - ? WHERE id = ?", [item.quantidade, item.produto_id]);
-    });
-
-    res.json({ success: true, vendaId });
-  });
-});
-
-app.get("/vendas", auth, (req, res) => {
-  db.all(`
-    SELECT v.id, v.total, v.data_venda, c.nome as cliente 
-    FROM vendas v 
-    LEFT JOIN clientes c ON c.id = v.cliente_id 
-    ORDER BY v.id DESC
-  `, [], (err, rows) => {
-    if (err) return res.status(500).json(err);
-    res.json(rows);
-  });
-});
-
-// ======================
+// =====================================
 // DASHBOARD
-// ======================
-app.get("/dashboard", auth, (req, res) => {
-  const dashboard = {};
+// =====================================
 
-  db.get("SELECT COUNT(*) as total FROM clientes", [], (err, row) => {
-    dashboard.clientes = row?.total || 0;
+async function carregarDashboard(){
 
-    db.get("SELECT COUNT(*) as total FROM produtos", [], (err, row) => {
-      dashboard.produtos = row?.total || 0;
+    if(
+        !existe("totalClientes")
+    ) return;
 
-      db.get("SELECT COUNT(*) as total FROM vendas", [], (err, row) => {
-        dashboard.vendas = row?.total || 0;
+    try{
 
-        db.get("SELECT SUM(total) as total FROM vendas", [], (err, row) => {
-          dashboard.faturamento = row?.total || 0;
-          res.json(dashboard);
+        const resposta =
+        await fetch(
+            "/dashboard"
+        );
+
+        const dados =
+        await resposta.json();
+
+        if(
+            existe(
+                "totalClientes"
+            )
+        ){
+
+            document
+            .getElementById(
+                "totalClientes"
+            )
+            .textContent =
+            dados.clientes || 0;
+
+        }
+
+        if(
+            existe(
+                "totalProdutos"
+            )
+        ){
+
+            document
+            .getElementById(
+                "totalProdutos"
+            )
+            .textContent =
+            dados.produtos || 0;
+
+        }
+
+        if(
+            existe(
+                "totalVendas"
+            )
+        ){
+
+            document
+            .getElementById(
+                "totalVendas"
+            )
+            .textContent =
+            dados.vendas || 0;
+
+        }
+
+        if(
+            existe(
+                "totalFaturamento"
+            )
+        ){
+
+            document
+            .getElementById(
+                "totalFaturamento"
+            )
+            .textContent =
+            dinheiro(
+                dados.faturamento
+            );
+
+        }
+
+    }catch(err){
+
+        console.error(
+            "Erro dashboard:",
+            err
+        );
+
+    }
+
+}
+
+// =====================================
+// ESTOQUE BAIXO
+// =====================================
+
+async function carregarEstoqueBaixo(){
+
+    if(
+        !existe(
+            "estoqueBaixo"
+        )
+    ) return;
+
+    try{
+
+        const resposta =
+        await fetch(
+            "/produtos"
+        );
+
+        const produtos =
+        await resposta.json();
+
+        const baixos =
+        produtos.filter(
+            p =>
+            Number(
+                p.estoque
+            ) <= 5
+        );
+
+        let html = "";
+
+        baixos.forEach(
+            produto=>{
+
+            html += `
+            <tr>
+
+            <td>
+                ${produto.nome}
+            </td>
+
+            <td>
+                ${produto.estoque}
+            </td>
+
+            </tr>
+            `;
+
         });
-      });
-    });
-  });
-});
 
-// ======================
-// UPLOAD
-// ======================
-app.post("/upload", auth, upload.single("imagem"), (req, res) => {
-  if (!req.file) return res.status(400).json({ success: false, message: "Nenhuma imagem enviada" });
-  res.json({ success: true, arquivo: req.file.filename });
-});
+        document
+        .getElementById(
+            "estoqueBaixo"
+        )
+        .innerHTML =
+        html;
 
-// ======================
+    }catch(err){
+
+        console.error(err);
+
+    }
+
+}
+
+// =====================================
+// TOP PRODUTOS
+// =====================================
+
+async function carregarTopProdutos(){
+
+    if(
+        !existe(
+            "topProdutos"
+        )
+    ) return;
+
+    try{
+
+        const resposta =
+        await fetch(
+            "/relatorio/top-produtos"
+        );
+
+        const produtos =
+        await resposta.json();
+
+        let html = "";
+
+        produtos.forEach(
+            item=>{
+
+            html += `
+            <tr>
+
+            <td>
+                ${item.nome}
+            </td>
+
+            <td>
+                ${item.total}
+            </td>
+
+            </tr>
+            `;
+
+        });
+
+        document
+        .getElementById(
+            "topProdutos"
+        )
+        .innerHTML =
+        html;
+
+    }catch(err){
+
+        console.error(err);
+
+    }
+
+}
+
+// =====================================
 // INICIALIZAÇÃO
-// ======================
-criarAdmin().then(() => {
-  app.listen(PORT, () => {
-    console.log("\n=================================");
-    console.log("   🏆 SPORT+ PRO 2.0");
-    console.log("=================================");
-    console.log(`🚀 Servidor rodando em: http://localhost:${PORT}`);
-    console.log("=================================\n");
-  });
+// =====================================
+
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
+
+    verificarSessao();
+
+    carregarDashboard();
+
+    carregarEstoqueBaixo();
+
+    carregarTopProdutos();
+
+});// =====================================
+// SPORT+ PRO 2.1
+// script.js
+// PARTE 1
+// =====================================
+
+// =====================================
+// UTILITÁRIOS
+// =====================================
+
+function existe(id){
+    return document.getElementById(id);
+}
+
+function dinheiro(valor){
+
+    return Number(valor || 0)
+    .toLocaleString(
+        "pt-BR",
+        {
+            style:"currency",
+            currency:"BRL"
+        }
+    );
+
+}
+
+// =====================================
+// VERIFICAR SESSÃO
+// =====================================
+
+async function verificarSessao(){
+
+    try{
+
+        const resposta =
+        await fetch("/session");
+
+        if(!resposta.ok){
+            location.href = "login.html";
+            return;
+        }
+
+        const usuario =
+        await resposta.json();
+
+        if(!usuario){
+
+            if(
+                !location.pathname
+                .includes("login")
+            ){
+
+                location.href =
+                "login.html";
+
+            }
+
+        }
+
+    }catch{
+
+        if(
+            !location.pathname
+            .includes("login")
+        ){
+
+            location.href =
+            "login.html";
+
+        }
+
+    }
+
+}
+
+// =====================================
+// LOGOUT
+// =====================================
+
+async function logout(){
+
+    try{
+
+        await fetch(
+            "/logout",
+            {
+                method:"POST"
+            }
+        );
+
+    }catch{}
+
+    location.href =
+    "login.html";
+
+}
+
+// =====================================
+// EVENTO LOGOUT
+// =====================================
+
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
+
+    const btnLogout =
+    existe("btnLogout");
+
+    if(btnLogout){
+
+        btnLogout
+        .addEventListener(
+            "click",
+            logout
+        );
+
+    }
+
+});
+
+// =====================================
+// DARK MODE
+// =====================================
+
+function carregarTema(){
+
+    const tema =
+    localStorage.getItem(
+        "tema"
+    );
+
+    if(
+        tema === "dark"
+    ){
+
+        document.body
+        .classList
+        .add("dark");
+
+    }
+
+}
+
+function alternarTema(){
+
+    document.body
+    .classList
+    .toggle("dark");
+
+    const escuro =
+    document.body
+    .classList
+    .contains("dark");
+
+    localStorage.setItem(
+        "tema",
+        escuro
+        ? "dark"
+        : "light"
+    );
+
+}
+
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
+
+    carregarTema();
+
+    const btnTema =
+    existe("btnTema");
+
+    if(btnTema){
+
+        btnTema
+        .addEventListener(
+            "click",
+            alternarTema
+        );
+
+    }
+
+});
+
+// =====================================
+// DASHBOARD
+// =====================================
+
+async function carregarDashboard(){
+
+    if(
+        !existe("totalClientes")
+    ) return;
+
+    try{
+
+        const resposta =
+        await fetch(
+            "/dashboard"
+        );
+
+        const dados =
+        await resposta.json();
+
+        if(
+            existe(
+                "totalClientes"
+            )
+        ){
+
+            document
+            .getElementById(
+                "totalClientes"
+            )
+            .textContent =
+            dados.clientes || 0;
+
+        }
+
+        if(
+            existe(
+                "totalProdutos"
+            )
+        ){
+
+            document
+            .getElementById(
+                "totalProdutos"
+            )
+            .textContent =
+            dados.produtos || 0;
+
+        }
+
+        if(
+            existe(
+                "totalVendas"
+            )
+        ){
+
+            document
+            .getElementById(
+                "totalVendas"
+            )
+            .textContent =
+            dados.vendas || 0;
+
+        }
+
+        if(
+            existe(
+                "totalFaturamento"
+            )
+        ){
+
+            document
+            .getElementById(
+                "totalFaturamento"
+            )
+            .textContent =
+            dinheiro(
+                dados.faturamento
+            );
+
+        }
+
+    }catch(err){
+
+        console.error(
+            "Erro dashboard:",
+            err
+        );
+
+    }
+
+}
+
+// =====================================
+// ESTOQUE BAIXO
+// =====================================
+
+async function carregarEstoqueBaixo(){
+
+    if(
+        !existe(
+            "estoqueBaixo"
+        )
+    ) return;
+
+    try{
+
+        const resposta =
+        await fetch(
+            "/produtos"
+        );
+
+        const produtos =
+        await resposta.json();
+
+        const baixos =
+        produtos.filter(
+            p =>
+            Number(
+                p.estoque
+            ) <= 5
+        );
+
+        let html = "";
+
+        baixos.forEach(
+            produto=>{
+
+            html += `
+            <tr>
+
+            <td>
+                ${produto.nome}
+            </td>
+
+            <td>
+                ${produto.estoque}
+            </td>
+
+            </tr>
+            `;
+
+        });
+
+        document
+        .getElementById(
+            "estoqueBaixo"
+        )
+        .innerHTML =
+        html;
+
+    }catch(err){
+
+        console.error(err);
+
+    }
+
+}
+
+// =====================================
+// TOP PRODUTOS
+// =====================================
+
+async function carregarTopProdutos(){
+
+    if(
+        !existe(
+            "topProdutos"
+        )
+    ) return;
+
+    try{
+
+        const resposta =
+        await fetch(
+            "/relatorio/top-produtos"
+        );
+
+        const produtos =
+        await resposta.json();
+
+        let html = "";
+
+        produtos.forEach(
+            item=>{
+
+            html += `
+            <tr>
+
+            <td>
+                ${item.nome}
+            </td>
+
+            <td>
+                ${item.total}
+            </td>
+
+            </tr>
+            `;
+
+        });
+
+        document
+        .getElementById(
+            "topProdutos"
+        )
+        .innerHTML =
+        html;
+
+    }catch(err){
+
+        console.error(err);
+
+    }
+
+}
+
+// =====================================
+// INICIALIZAÇÃO
+// =====================================
+
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
+
+    verificarSessao();
+
+    carregarDashboard();
+
+    carregarEstoqueBaixo();
+
+    carregarTopProdutos();
+
+});// =====================================
+// PRODUTOS
+// PARTE 3
+// =====================================
+
+let produtosCache = [];
+
+// =====================================
+// CARREGAR PRODUTOS
+// =====================================
+
+async function carregarProdutos(){
+
+    if(!existe("tabelaProdutos")) return;
+
+    try{
+
+        const resposta =
+        await fetch("/produtos");
+
+        produtosCache =
+        await resposta.json();
+
+        renderizarProdutos(
+            produtosCache
+        );
+
+        atualizarEstatisticasProdutos();
+
+        atualizarTabelaEstoqueBaixo();
+
+    }catch(err){
+
+        console.error(
+            "Erro produtos:",
+            err
+        );
+
+    }
+
+}
+
+// =====================================
+// RENDERIZAR PRODUTOS
+// =====================================
+
+function renderizarProdutos(lista){
+
+    let html = "";
+
+    lista.forEach(produto=>{
+
+        html += `
+        <tr>
+
+            <td>
+                <img
+                src="${
+                    produto.imagem ||
+                    'https://via.placeholder.com/70'
+                }"
+                class="produto-img"
+                onerror="this.src='https://via.placeholder.com/70'">
+            </td>
+
+            <td>${produto.nome}</td>
+
+            <td>${produto.categoria}</td>
+
+            <td>
+                ${dinheiro(produto.preco)}
+            </td>
+
+            <td>
+                ${produto.estoque}
+            </td>
+
+            <td>
+
+                <button
+                class="btn-warning"
+                onclick="editarProduto(${produto.id})">
+                Editar
+                </button>
+
+                <button
+                class="btn-danger"
+                onclick="excluirProduto(${produto.id})">
+                Excluir
+                </button>
+
+            </td>
+
+        </tr>
+        `;
+
+    });
+
+    document
+    .getElementById(
+        "tabelaProdutos"
+    )
+    .innerHTML = html;
+
+}
+
+// =====================================
+// SALVAR PRODUTO
+// =====================================
+
+async function salvarProduto(){
+
+    const id =
+    existe("produtoId").value;
+
+    const dados = {
+
+        nome:
+        existe("produtoNome")
+        .value.trim(),
+
+        categoria:
+        existe("produtoCategoria")
+        .value,
+
+        preco:
+        Number(
+            existe("produtoPreco")
+            .value
+        ),
+
+        estoque:
+        Number(
+            existe("produtoEstoque")
+            .value
+        ),
+
+        imagem:
+        existe("produtoImagem")
+        .value.trim()
+
+    };
+
+    if(!dados.nome){
+
+        alert(
+            "Informe o nome do produto."
+        );
+
+        return;
+
+    }
+
+    try{
+
+        if(id){
+
+            await fetch(
+                "/produtos/" + id,
+                {
+                    method:"PUT",
+                    headers:{
+                        "Content-Type":
+                        "application/json"
+                    },
+                    body:
+                    JSON.stringify(
+                        dados
+                    )
+                }
+            );
+
+        }else{
+
+            await fetch(
+                "/produtos",
+                {
+                    method:"POST",
+                    headers:{
+                        "Content-Type":
+                        "application/json"
+                    },
+                    body:
+                    JSON.stringify(
+                        dados
+                    )
+                }
+            );
+
+        }
+
+        limparProduto();
+
+        carregarProdutos();
+
+    }catch(err){
+
+        console.error(err);
+
+        alert(
+            "Erro ao salvar produto."
+        );
+
+    }
+
+}
+
+// =====================================
+// EDITAR PRODUTO
+// =====================================
+
+function editarProduto(id){
+
+    const produto =
+    produtosCache.find(
+        p => p.id == id
+    );
+
+    if(!produto) return;
+
+    existe(
+        "produtoId"
+    ).value =
+    produto.id;
+
+    existe(
+        "produtoNome"
+    ).value =
+    produto.nome;
+
+    existe(
+        "produtoCategoria"
+    ).value =
+    produto.categoria;
+
+    existe(
+        "produtoPreco"
+    ).value =
+    produto.preco;
+
+    existe(
+        "produtoEstoque"
+    ).value =
+    produto.estoque;
+
+    existe(
+        "produtoImagem"
+    ).value =
+    produto.imagem || "";
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+// =====================================
+// EXCLUIR PRODUTO
+// =====================================
+
+async function excluirProduto(id){
+
+    const confirmar =
+    confirm(
+        "Deseja excluir este produto?"
+    );
+
+    if(!confirmar) return;
+
+    try{
+
+        await fetch(
+            "/produtos/" + id,
+            {
+                method:"DELETE"
+            }
+        );
+
+        carregarProdutos();
+
+    }catch(err){
+
+        console.error(err);
+
+    }
+
+}
+
+// =====================================
+// LIMPAR FORM
+// =====================================
+
+function limparProduto(){
+
+    existe(
+        "produtoId"
+    ).value = "";
+
+    existe(
+        "produtoNome"
+    ).value = "";
+
+    existe(
+        "produtoCategoria"
+    ).value = "";
+
+    existe(
+        "produtoPreco"
+    ).value = "";
+
+    existe(
+        "produtoEstoque"
+    ).value = "";
+
+    existe(
+        "produtoImagem"
+    ).value = "";
+
+}
+
+// =====================================
+// PESQUISA
+// =====================================
+
+function pesquisarProduto(){
+
+    const texto =
+    existe(
+        "pesquisaProduto"
+    )
+    .value
+    .toLowerCase();
+
+    const filtrado =
+    produtosCache.filter(
+        produto =>
+
+        (produto.nome || "")
+        .toLowerCase()
+        .includes(texto)
+
+        ||
+
+        (produto.categoria || "")
+        .toLowerCase()
+        .includes(texto)
+
+    );
+
+    renderizarProdutos(
+        filtrado
+    );
+
+}
+
+// =====================================
+// ESTOQUE BAIXO
+// =====================================
+
+function atualizarTabelaEstoqueBaixo(){
+
+    if(
+        !existe(
+            "tabelaEstoqueBaixo"
+        )
+    ) return;
+
+    const baixos =
+    produtosCache.filter(
+        produto =>
+        Number(
+            produto.estoque
+        ) <= 5
+    );
+
+    let html = "";
+
+    baixos.forEach(produto=>{
+
+        html += `
+        <tr>
+
+            <td>
+                ${produto.nome}
+            </td>
+
+            <td>
+                ${produto.estoque}
+            </td>
+
+        </tr>
+        `;
+
+    });
+
+    document
+    .getElementById(
+        "tabelaEstoqueBaixo"
+    )
+    .innerHTML = html;
+
+}
+
+// =====================================
+// ESTATÍSTICAS
+// =====================================
+
+function atualizarEstatisticasProdutos(){
+
+    if(
+        existe(
+            "estatisticaProdutos"
+        )
+    ){
+
+        document
+        .getElementById(
+            "estatisticaProdutos"
+        )
+        .textContent =
+        produtosCache.length;
+
+    }
+
+    if(
+        existe(
+            "estatisticaEstoqueBaixo"
+        )
+    ){
+
+        const totalBaixo =
+        produtosCache.filter(
+            produto =>
+            Number(
+                produto.estoque
+            ) <= 5
+        ).length;
+
+        document
+        .getElementById(
+            "estatisticaEstoqueBaixo"
+        )
+        .textContent =
+        totalBaixo;
+
+    }
+
+}
+
+// =====================================
+// EVENTOS PRODUTOS
+// =====================================
+
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
+
+    if(
+        existe(
+            "btnSalvarProduto"
+        )
+    ){
+
+        existe(
+            "btnSalvarProduto"
+        )
+        .addEventListener(
+            "click",
+            salvarProduto
+        );
+
+    }
+
+    if(
+        existe(
+            "btnCancelarProduto"
+        )
+    ){
+
+        existe(
+            "btnCancelarProduto"
+        )
+        .addEventListener(
+            "click",
+            limparProduto
+        );
+
+    }
+
+    if(
+        existe(
+            "pesquisaProduto"
+        )
+    ){
+
+        existe(
+            "pesquisaProduto"
+        )
+        .addEventListener(
+            "keyup",
+            pesquisarProduto
+        );
+
+    }
+
+    carregarProdutos();
+
+});// =====================================
+// VENDAS E CARRINHO
+// PARTE 4
+// =====================================
+
+let carrinho = [];
+let clientesVenda = [];
+let produtosVenda = [];
+
+// =====================================
+// CARREGAR DADOS DOS SELECTS
+// =====================================
+
+async function carregarDadosVenda(){
+
+    if(!existe("vendaCliente")) return;
+
+    try{
+
+        const clientesResp =
+        await fetch("/clientes");
+
+        clientesVenda =
+        await clientesResp.json();
+
+        const produtosResp =
+        await fetch("/produtos");
+
+        produtosVenda =
+        await produtosResp.json();
+
+        preencherClientesVenda();
+
+        preencherProdutosVenda();
+
+    }catch(err){
+
+        console.error(
+            "Erro ao carregar venda:",
+            err
+        );
+
+    }
+
+}
+
+// =====================================
+// CLIENTES
+// =====================================
+
+function preencherClientesVenda(){
+
+    const select =
+    existe("vendaCliente");
+
+    if(!select) return;
+
+    let html =
+    `<option value="">Selecione um cliente</option>`;
+
+    clientesVenda.forEach(cliente=>{
+
+        html += `
+        <option value="${cliente.id}">
+            ${cliente.nome}
+        </option>
+        `;
+
+    });
+
+    select.innerHTML = html;
+
+}
+
+// =====================================
+// PRODUTOS
+// =====================================
+
+function preencherProdutosVenda(){
+
+    const select =
+    existe("vendaProduto");
+
+    if(!select) return;
+
+    let html =
+    `<option value="">Selecione um produto</option>`;
+
+    produtosVenda.forEach(produto=>{
+
+        html += `
+        <option value="${produto.id}">
+            ${produto.nome}
+            (${produto.estoque} un.)
+        </option>
+        `;
+
+    });
+
+    select.innerHTML = html;
+
+}
+
+// =====================================
+// ADICIONAR AO CARRINHO
+// =====================================
+
+function adicionarCarrinho(){
+
+    const produtoId =
+    Number(
+        existe("vendaProduto").value
+    );
+
+    const quantidade =
+    Number(
+        existe("vendaQuantidade").value
+    );
+
+    if(!produtoId){
+
+        alert(
+            "Selecione um produto."
+        );
+
+        return;
+
+    }
+
+    if(
+        quantidade <= 0
+    ){
+
+        alert(
+            "Quantidade inválida."
+        );
+
+        return;
+
+    }
+
+    const produto =
+    produtosVenda.find(
+        p => p.id === produtoId
+    );
+
+    if(!produto) return;
+
+    const existente =
+    carrinho.find(
+        item =>
+        item.produto_id === produto.id
+    );
+
+    if(existente){
+
+        existente.quantidade +=
+        quantidade;
+
+    }else{
+
+        carrinho.push({
+
+            produto_id:
+            produto.id,
+
+            nome:
+            produto.nome,
+
+            preco:
+            Number(
+                produto.preco
+            ),
+
+            quantidade
+
+        });
+
+    }
+
+    renderizarCarrinho();
+
+}
+
+// =====================================
+// REMOVER ITEM
+// =====================================
+
+function removerCarrinho(id){
+
+    carrinho =
+    carrinho.filter(
+        item =>
+        item.produto_id !== id
+    );
+
+    renderizarCarrinho();
+
+}
+
+// =====================================
+// LIMPAR CARRINHO
+// =====================================
+
+function limparCarrinho(){
+
+    carrinho = [];
+
+    renderizarCarrinho();
+
+}
+
+// =====================================
+// TOTAL
+// =====================================
+
+function calcularTotal(){
+
+    return carrinho.reduce(
+        (soma,item)=>
+
+        soma +
+
+        (
+            item.preco *
+            item.quantidade
+        ),
+
+        0
+    );
+
+}
+
+// =====================================
+// RENDERIZAR
+// =====================================
+
+function renderizarCarrinho(){
+
+    const tabela =
+    existe(
+        "tabelaCarrinho"
+    );
+
+    if(!tabela) return;
+
+    let html = "";
+
+    carrinho.forEach(item=>{
+
+        html += `
+        <tr>
+
+            <td>
+                ${item.nome}
+            </td>
+
+            <td>
+                ${dinheiro(
+                    item.preco
+                )}
+            </td>
+
+            <td>
+                ${item.quantidade}
+            </td>
+
+            <td>
+                ${dinheiro(
+                    item.preco *
+                    item.quantidade
+                )}
+            </td>
+
+            <td>
+
+                <button
+                class="btn-danger"
+                onclick="
+                removerCarrinho(
+                ${item.produto_id}
+                )">
+
+                Remover
+
+                </button>
+
+            </td>
+
+        </tr>
+        `;
+
+    });
+
+    tabela.innerHTML = html;
+
+    const total =
+    calcularTotal();
+
+    if(
+        existe(
+            "totalCarrinho"
+        )
+    ){
+
+        existe(
+            "totalCarrinho"
+        ).textContent =
+        "Total: " +
+        dinheiro(total);
+
+    }
+
+    if(
+        existe(
+            "estatisticaItensCarrinho"
+        )
+    ){
+
+        existe(
+            "estatisticaItensCarrinho"
+        ).textContent =
+        carrinho.length;
+
+    }
+
+    if(
+        existe(
+            "estatisticaValorCarrinho"
+        )
+    ){
+
+        existe(
+            "estatisticaValorCarrinho"
+        ).textContent =
+        dinheiro(total);
+
+    }
+
+}
+
+// =====================================
+// FINALIZAR VENDA
+// =====================================
+
+async function finalizarVenda(){
+
+    const cliente_id =
+    Number(
+        existe(
+            "vendaCliente"
+        ).value
+    );
+
+    if(!cliente_id){
+
+        alert(
+            "Selecione um cliente."
+        );
+
+        return;
+
+    }
+
+    if(
+        carrinho.length === 0
+    ){
+
+        alert(
+            "Carrinho vazio."
+        );
+
+        return;
+
+    }
+
+    try{
+
+        const resposta =
+        await fetch(
+            "/vendas",
+            {
+                method:"POST",
+
+                headers:{
+                    "Content-Type":
+                    "application/json"
+                },
+
+                body:
+                JSON.stringify({
+
+                    cliente_id,
+
+                    itens:
+                    carrinho,
+
+                    total:
+                    calcularTotal()
+
+                })
+
+            }
+        );
+
+        const dados =
+        await resposta.json();
+
+        if(dados.success){
+
+            alert(
+                "Venda realizada com sucesso!"
+            );
+
+            carrinho = [];
+
+            renderizarCarrinho();
+
+            carregarDadosVenda();
+
+        }
+
+    }catch(err){
+
+        console.error(err);
+
+        alert(
+            "Erro ao finalizar venda."
+        );
+
+    }
+
+}
+
+// =====================================
+// EVENTOS
+// =====================================
+
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
+
+    if(
+        existe(
+            "btnAdicionarCarrinho"
+        )
+    ){
+
+        existe(
+            "btnAdicionarCarrinho"
+        )
+        .addEventListener(
+            "click",
+            adicionarCarrinho
+        );
+
+    }
+
+    if(
+        existe(
+            "btnLimparCarrinho"
+        )
+    ){
+
+        existe(
+            "btnLimparCarrinho"
+        )
+        .addEventListener(
+            "click",
+            limparCarrinho
+        );
+
+    }
+
+    if(
+        existe(
+            "btnFinalizarVenda"
+        )
+    ){
+
+        existe(
+            "btnFinalizarVenda"
+        )
+        .addEventListener(
+            "click",
+            finalizarVenda
+        );
+
+    }
+
+    carregarDadosVenda();
+
+});// =====================================
+// CONSULTAS E RELATÓRIOS
+// PARTE 5
+// =====================================
+
+let vendasCache = [];
+
+// =====================================
+// CARREGAR VENDAS
+// =====================================
+
+async function carregarConsultas(){
+
+    if(!existe("tabelaConsultas"))
+        return;
+
+    try{
+
+        const resposta =
+        await fetch("/vendas");
+
+        vendasCache =
+        await resposta.json();
+
+        renderizarConsultas(
+            vendasCache
+        );
+
+        atualizarEstatisticasVendas();
+
+    }catch(err){
+
+        console.error(
+            "Erro consultas:",
+            err
+        );
+
+    }
+
+}
+
+// =====================================
+// RENDERIZAR TABELA
+// =====================================
+
+function renderizarConsultas(lista){
+
+    let html = "";
+
+    lista.forEach(venda=>{
+
+        html += `
+        <tr>
+
+            <td>${venda.id}</td>
+
+            <td>
+                ${venda.cliente_id || "-"}
+            </td>
+
+            <td>
+                ${dinheiro(venda.total)}
+            </td>
+
+            <td>
+                ${new Date(venda.data)
+                .toLocaleString("pt-BR")}
+            </td>
+
+            <td>
+
+                <button
+                class="btn-primary"
+                onclick="verDetalhesVenda(${venda.id})">
+                Detalhes
+                </button>
+
+            </td>
+
+        </tr>
+        `;
+
+    });
+
+    existe(
+        "tabelaConsultas"
+    ).innerHTML = html;
+
+}
+
+// =====================================
+// ESTATÍSTICAS
+// =====================================
+
+function atualizarEstatisticasVendas(){
+
+    if(
+        existe(
+            "estatisticaVendas"
+        )
+    ){
+
+        existe(
+            "estatisticaVendas"
+        ).textContent =
+        vendasCache.length;
+
+    }
+
+    if(
+        existe(
+            "estatisticaFaturamento"
+        )
+    ){
+
+        const total =
+        vendasCache.reduce(
+            (soma,venda)=>
+
+            soma +
+            Number(
+                venda.total
+            ),
+
+            0
+        );
+
+        existe(
+            "estatisticaFaturamento"
+        ).textContent =
+        dinheiro(total);
+
+    }
+
+}
+
+// =====================================
+// FILTRO
+// =====================================
+
+function filtrarVendas(){
+
+    const inicio =
+    existe(
+        "filtroInicio"
+    ).value;
+
+    const fim =
+    existe(
+        "filtroFim"
+    ).value;
+
+    if(!inicio || !fim){
+
+        renderizarConsultas(
+            vendasCache
+        );
+
+        return;
+
+    }
+
+    const filtrado =
+    vendasCache.filter(
+        venda=>{
+
+        const data =
+        venda.data
+        .substring(0,10);
+
+        return (
+            data >= inicio &&
+            data <= fim
+        );
+
+    });
+
+    renderizarConsultas(
+        filtrado
+    );
+
+}
+
+// =====================================
+// DETALHES
+// =====================================
+
+async function verDetalhesVenda(id){
+
+    try{
+
+        const resposta =
+        await fetch(
+            "/vendas/" + id
+        );
+
+        const itens =
+        await resposta.json();
+
+        let html =
+        `
+        <table>
+
+        <thead>
+
+        <tr>
+
+        <th>Produto</th>
+        <th>Qtd</th>
+        <th>Preço</th>
+
+        </tr>
+
+        </thead>
+
+        <tbody>
+        `;
+
+        itens.forEach(item=>{
+
+            html += `
+            <tr>
+
+            <td>
+            ${item.produto_id}
+            </td>
+
+            <td>
+            ${item.quantidade}
+            </td>
+
+            <td>
+            ${dinheiro(
+                item.preco
+            )}
+            </td>
+
+            </tr>
+            `;
+
+        });
+
+        html += `
+        </tbody>
+        </table>
+        `;
+
+        existe(
+            "detalhesVenda"
+        ).innerHTML =
+        html;
+
+        existe(
+            "modalVenda"
+        ).style.display =
+        "flex";
+
+    }catch(err){
+
+        console.error(err);
+
+    }
+
+}
+
+// =====================================
+// FECHAR MODAL
+// =====================================
+
+function fecharModal(){
+
+    if(
+        existe(
+            "modalVenda"
+        )
+    ){
+
+        existe(
+            "modalVenda"
+        ).style.display =
+        "none";
+
+    }
+
+}
+
+// =====================================
+// EVENTOS CONSULTAS
+// =====================================
+
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
+
+    if(
+        existe(
+            "btnFiltrarVendas"
+        )
+    ){
+
+        existe(
+            "btnFiltrarVendas"
+        )
+        .addEventListener(
+            "click",
+            filtrarVendas
+        );
+
+    }
+
+    if(
+        existe(
+            "fecharModal"
+        )
+    ){
+
+        existe(
+            "fecharModal"
+        )
+        .addEventListener(
+            "click",
+            fecharModal
+        );
+
+    }
+
+    carregarConsultas();
+
 });
