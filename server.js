@@ -1,76 +1,60 @@
 // =====================================
 // SPORT+ PRO 2.1
-// script.js
-// PARTE 1
+// SCRIPT.JS - PARTE 1
 // =====================================
 
 // =====================================
 // UTILITÁRIOS
 // =====================================
 
-function existe(id){
+function existe(id) {
     return document.getElementById(id);
 }
 
-function dinheiro(valor){
-
-    return Number(valor || 0)
-    .toLocaleString(
+function dinheiro(valor) {
+    return Number(valor || 0).toLocaleString(
         "pt-BR",
         {
-            style:"currency",
-            currency:"BRL"
+            style: "currency",
+            currency: "BRL"
         }
     );
-
 }
 
 // =====================================
-// VERIFICAR SESSÃO
+// TEMA ESCURO
 // =====================================
 
-async function verificarSessao(){
+function carregarTema() {
 
-    try{
+    const tema =
+    localStorage.getItem("tema");
 
-        const resposta =
-        await fetch("/session");
+    if (tema === "dark") {
 
-        if(!resposta.ok){
-            location.href = "login.html";
-            return;
-        }
-
-        const usuario =
-        await resposta.json();
-
-        if(!usuario){
-
-            if(
-                !location.pathname
-                .includes("login")
-            ){
-
-                location.href =
-                "login.html";
-
-            }
-
-        }
-
-    }catch{
-
-        if(
-            !location.pathname
-            .includes("login")
-        ){
-
-            location.href =
-            "login.html";
-
-        }
+        document.body.classList.add(
+            "dark"
+        );
 
     }
+
+}
+
+function alternarTema() {
+
+    document.body.classList.toggle(
+        "dark"
+    );
+
+    const escuro =
+    document.body.classList.contains(
+        "dark"
+    );
+
+    localStorage.setItem(
+        "tema",
+        escuro ? "dark" : "light"
+    );
 
 }
 
@@ -78,18 +62,20 @@ async function verificarSessao(){
 // LOGOUT
 // =====================================
 
-async function logout(){
+async function logout() {
 
-    try{
+    try {
 
         await fetch(
             "/logout",
             {
-                method:"POST"
+                method: "POST"
             }
         );
 
-    }catch{}
+    } catch (e) {
+        console.error(e);
+    }
 
     location.href =
     "login.html";
@@ -97,179 +83,95 @@ async function logout(){
 }
 
 // =====================================
-// EVENTO LOGOUT
+// VERIFICAR SESSÃO
 // =====================================
 
-document.addEventListener(
-"DOMContentLoaded",
-()=>{
+async function verificarSessao() {
 
-    const btnLogout =
-    existe("btnLogout");
+    try {
 
-    if(btnLogout){
+        const resposta =
+        await fetch("/session");
 
-        btnLogout
-        .addEventListener(
-            "click",
-            logout
-        );
+        if (!resposta.ok) {
 
-    }
+            location.href =
+            "login.html";
 
-});
+            return;
 
-// =====================================
-// DARK MODE
-// =====================================
+        }
 
-function carregarTema(){
+        const usuario =
+        await resposta.json();
 
-    const tema =
-    localStorage.getItem(
-        "tema"
-    );
+        if (
+            !usuario &&
+            !location.pathname.includes("login")
+        ) {
 
-    if(
-        tema === "dark"
-    ){
+            location.href =
+            "login.html";
 
-        document.body
-        .classList
-        .add("dark");
+        }
+
+    } catch (erro) {
+
+        console.error(erro);
 
     }
 
 }
-
-function alternarTema(){
-
-    document.body
-    .classList
-    .toggle("dark");
-
-    const escuro =
-    document.body
-    .classList
-    .contains("dark");
-
-    localStorage.setItem(
-        "tema",
-        escuro
-        ? "dark"
-        : "light"
-    );
-
-}
-
-document.addEventListener(
-"DOMContentLoaded",
-()=>{
-
-    carregarTema();
-
-    const btnTema =
-    existe("btnTema");
-
-    if(btnTema){
-
-        btnTema
-        .addEventListener(
-            "click",
-            alternarTema
-        );
-
-    }
-
-});
 
 // =====================================
 // DASHBOARD
 // =====================================
 
-async function carregarDashboard(){
+async function carregarDashboard() {
 
-    if(
+    if (
         !existe("totalClientes")
     ) return;
 
-    try{
+    try {
 
         const resposta =
-        await fetch(
-            "/dashboard"
-        );
+        await fetch("/dashboard");
 
         const dados =
         await resposta.json();
 
-        if(
-            existe(
-                "totalClientes"
-            )
-        ){
-
-            document
-            .getElementById(
-                "totalClientes"
-            )
+        if (existe("totalClientes")) {
+            existe("totalClientes")
             .textContent =
             dados.clientes || 0;
-
         }
 
-        if(
-            existe(
-                "totalProdutos"
-            )
-        ){
-
-            document
-            .getElementById(
-                "totalProdutos"
-            )
+        if (existe("totalProdutos")) {
+            existe("totalProdutos")
             .textContent =
             dados.produtos || 0;
-
         }
 
-        if(
-            existe(
-                "totalVendas"
-            )
-        ){
-
-            document
-            .getElementById(
-                "totalVendas"
-            )
+        if (existe("totalVendas")) {
+            existe("totalVendas")
             .textContent =
             dados.vendas || 0;
-
         }
 
-        if(
-            existe(
-                "totalFaturamento"
-            )
-        ){
-
-            document
-            .getElementById(
-                "totalFaturamento"
-            )
+        if (existe("totalFaturamento")) {
+            existe("totalFaturamento")
             .textContent =
             dinheiro(
                 dados.faturamento
             );
-
         }
 
-    }catch(err){
+    } catch (erro) {
 
         console.error(
-            "Erro dashboard:",
-            err
+            "Erro Dashboard:",
+            erro
         );
 
     }
@@ -280,63 +182,47 @@ async function carregarDashboard(){
 // ESTOQUE BAIXO
 // =====================================
 
-async function carregarEstoqueBaixo(){
+async function carregarEstoqueBaixo() {
 
-    if(
-        !existe(
-            "estoqueBaixo"
-        )
+    if (
+        !existe("estoqueBaixo")
     ) return;
 
-    try{
+    try {
 
         const resposta =
-        await fetch(
-            "/produtos"
-        );
+        await fetch("/produtos");
 
         const produtos =
         await resposta.json();
 
-        const baixos =
+        const estoqueBaixo =
         produtos.filter(
-            p =>
-            Number(
-                p.estoque
-            ) <= 5
+            produto =>
+            Number(produto.estoque) <= 5
         );
 
         let html = "";
 
-        baixos.forEach(
-            produto=>{
+        estoqueBaixo.forEach(
+            produto => {
 
             html += `
             <tr>
-
-            <td>
-                ${produto.nome}
-            </td>
-
-            <td>
-                ${produto.estoque}
-            </td>
-
+                <td>${produto.nome}</td>
+                <td>${produto.estoque}</td>
             </tr>
             `;
 
         });
 
-        document
-        .getElementById(
+        existe(
             "estoqueBaixo"
-        )
-        .innerHTML =
-        html;
+        ).innerHTML = html;
 
-    }catch(err){
+    } catch (erro) {
 
-        console.error(err);
+        console.error(erro);
 
     }
 
@@ -346,15 +232,13 @@ async function carregarEstoqueBaixo(){
 // TOP PRODUTOS
 // =====================================
 
-async function carregarTopProdutos(){
+async function carregarTopProdutos() {
 
-    if(
-        !existe(
-            "topProdutos"
-        )
+    if (
+        !existe("topProdutos")
     ) return;
 
-    try{
+    try {
 
         const resposta =
         await fetch(
@@ -367,46 +251,38 @@ async function carregarTopProdutos(){
         let html = "";
 
         produtos.forEach(
-            item=>{
+            item => {
 
             html += `
             <tr>
-
-            <td>
-                ${item.nome}
-            </td>
-
-            <td>
-                ${item.total}
-            </td>
-
+                <td>${item.nome}</td>
+                <td>${item.total}</td>
             </tr>
             `;
 
         });
 
-        document
-        .getElementById(
+        existe(
             "topProdutos"
-        )
-        .innerHTML =
-        html;
+        ).innerHTML = html;
 
-    }catch(err){
+    } catch (erro) {
 
-        console.error(err);
+        console.error(erro);
 
     }
 
 }
 
 // =====================================
-// INICIALIZAÇÃO
+// EVENTOS GLOBAIS
 // =====================================
 
 document.addEventListener(
 "DOMContentLoaded",
-()=>{
+() => {
+
+    carregarTema();
 
     verificarSessao();
 
@@ -415,279 +291,203 @@ document.addEventListener(
     carregarEstoqueBaixo();
 
     carregarTopProdutos();
+
+    const btnTema =
+    existe("btnTema");
+
+    if (btnTema) {
+
+        btnTema.addEventListener(
+            "click",
+            alternarTema
+        );
+
+    }
+
+    const btnLogout =
+    existe("btnLogout");
+
+    if (btnLogout) {
+
+        btnLogout.addEventListener(
+            "click",
+            logout
+        );
+
+    }
 
 });// =====================================
-// SPORT+ PRO 2.1
-// script.js
-// PARTE 1
+// CLIENTES
+// PARTE 2
 // =====================================
 
-// =====================================
-// UTILITÁRIOS
-// =====================================
-
-function existe(id){
-    return document.getElementById(id);
-}
-
-function dinheiro(valor){
-
-    return Number(valor || 0)
-    .toLocaleString(
-        "pt-BR",
-        {
-            style:"currency",
-            currency:"BRL"
-        }
-    );
-
-}
+let clientesCache = [];
 
 // =====================================
-// VERIFICAR SESSÃO
+// CARREGAR CLIENTES
 // =====================================
 
-async function verificarSessao(){
+async function carregarClientes() {
 
-    try{
+    if (!existe("tabelaClientes"))
+        return;
+
+    try {
 
         const resposta =
-        await fetch("/session");
+        await fetch("/clientes");
 
-        if(!resposta.ok){
-            location.href = "login.html";
-            return;
-        }
-
-        const usuario =
+        clientesCache =
         await resposta.json();
 
-        if(!usuario){
+        renderizarClientes(
+            clientesCache
+        );
 
-            if(
-                !location.pathname
-                .includes("login")
-            ){
+        atualizarEstatisticasClientes();
 
-                location.href =
-                "login.html";
+    } catch (erro) {
 
-            }
-
-        }
-
-    }catch{
-
-        if(
-            !location.pathname
-            .includes("login")
-        ){
-
-            location.href =
-            "login.html";
-
-        }
+        console.error(
+            "Erro clientes:",
+            erro
+        );
 
     }
 
 }
 
 // =====================================
-// LOGOUT
+// RENDERIZAR CLIENTES
 // =====================================
 
-async function logout(){
+function renderizarClientes(lista) {
 
-    try{
+    let html = "";
 
-        await fetch(
-            "/logout",
-            {
-                method:"POST"
-            }
-        );
+    lista.forEach(cliente => {
 
-    }catch{}
+        html += `
+        <tr>
 
-    location.href =
-    "login.html";
+            <td>${cliente.id}</td>
+
+            <td>${cliente.nome}</td>
+
+            <td>${cliente.email}</td>
+
+            <td>${cliente.telefone}</td>
+
+            <td>
+
+                <button
+                class="btn-warning"
+                onclick="editarCliente(${cliente.id})">
+                Editar
+                </button>
+
+                <button
+                class="btn-danger"
+                onclick="excluirCliente(${cliente.id})">
+                Excluir
+                </button>
+
+            </td>
+
+        </tr>
+        `;
+
+    });
+
+    existe(
+        "tabelaClientes"
+    ).innerHTML = html;
 
 }
 
 // =====================================
-// EVENTO LOGOUT
+// SALVAR CLIENTE
 // =====================================
 
-document.addEventListener(
-"DOMContentLoaded",
-()=>{
+async function salvarCliente() {
 
-    const btnLogout =
-    existe("btnLogout");
+    const id =
+    existe("clienteId").value;
 
-    if(btnLogout){
+    const dados = {
 
-        btnLogout
-        .addEventListener(
-            "click",
-            logout
+        nome:
+        existe("clienteNome")
+        .value.trim(),
+
+        email:
+        existe("clienteEmail")
+        .value.trim(),
+
+        telefone:
+        existe("clienteTelefone")
+        .value.trim()
+
+    };
+
+    if (!dados.nome) {
+
+        alert(
+            "Informe o nome."
         );
+
+        return;
 
     }
 
-});
+    try {
 
-// =====================================
-// DARK MODE
-// =====================================
+        if (id) {
 
-function carregarTema(){
+            await fetch(
+                "/clientes/" + id,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type":
+                        "application/json"
+                    },
+                    body:
+                    JSON.stringify(
+                        dados
+                    )
+                }
+            );
 
-    const tema =
-    localStorage.getItem(
-        "tema"
-    );
+        } else {
 
-    if(
-        tema === "dark"
-    ){
-
-        document.body
-        .classList
-        .add("dark");
-
-    }
-
-}
-
-function alternarTema(){
-
-    document.body
-    .classList
-    .toggle("dark");
-
-    const escuro =
-    document.body
-    .classList
-    .contains("dark");
-
-    localStorage.setItem(
-        "tema",
-        escuro
-        ? "dark"
-        : "light"
-    );
-
-}
-
-document.addEventListener(
-"DOMContentLoaded",
-()=>{
-
-    carregarTema();
-
-    const btnTema =
-    existe("btnTema");
-
-    if(btnTema){
-
-        btnTema
-        .addEventListener(
-            "click",
-            alternarTema
-        );
-
-    }
-
-});
-
-// =====================================
-// DASHBOARD
-// =====================================
-
-async function carregarDashboard(){
-
-    if(
-        !existe("totalClientes")
-    ) return;
-
-    try{
-
-        const resposta =
-        await fetch(
-            "/dashboard"
-        );
-
-        const dados =
-        await resposta.json();
-
-        if(
-            existe(
-                "totalClientes"
-            )
-        ){
-
-            document
-            .getElementById(
-                "totalClientes"
-            )
-            .textContent =
-            dados.clientes || 0;
-
-        }
-
-        if(
-            existe(
-                "totalProdutos"
-            )
-        ){
-
-            document
-            .getElementById(
-                "totalProdutos"
-            )
-            .textContent =
-            dados.produtos || 0;
-
-        }
-
-        if(
-            existe(
-                "totalVendas"
-            )
-        ){
-
-            document
-            .getElementById(
-                "totalVendas"
-            )
-            .textContent =
-            dados.vendas || 0;
-
-        }
-
-        if(
-            existe(
-                "totalFaturamento"
-            )
-        ){
-
-            document
-            .getElementById(
-                "totalFaturamento"
-            )
-            .textContent =
-            dinheiro(
-                dados.faturamento
+            await fetch(
+                "/clientes",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type":
+                        "application/json"
+                    },
+                    body:
+                    JSON.stringify(
+                        dados
+                    )
+                }
             );
 
         }
 
-    }catch(err){
+        limparCliente();
 
-        console.error(
-            "Erro dashboard:",
-            err
+        carregarClientes();
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        alert(
+            "Erro ao salvar cliente."
         );
 
     }
@@ -695,144 +495,213 @@ async function carregarDashboard(){
 }
 
 // =====================================
-// ESTOQUE BAIXO
+// EDITAR CLIENTE
 // =====================================
 
-async function carregarEstoqueBaixo(){
+function editarCliente(id) {
 
-    if(
-        !existe(
-            "estoqueBaixo"
-        )
-    ) return;
+    const cliente =
+    clientesCache.find(
+        c => c.id == id
+    );
 
-    try{
+    if (!cliente) return;
 
-        const resposta =
+    existe("clienteId")
+    .value = cliente.id;
+
+    existe("clienteNome")
+    .value = cliente.nome;
+
+    existe("clienteEmail")
+    .value = cliente.email;
+
+    existe("clienteTelefone")
+    .value = cliente.telefone;
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+// =====================================
+// EXCLUIR CLIENTE
+// =====================================
+
+async function excluirCliente(id) {
+
+    const confirmar =
+    confirm(
+        "Deseja excluir este cliente?"
+    );
+
+    if (!confirmar)
+        return;
+
+    try {
+
         await fetch(
-            "/produtos"
+            "/clientes/" + id,
+            {
+                method: "DELETE"
+            }
         );
 
-        const produtos =
-        await resposta.json();
+        carregarClientes();
 
-        const baixos =
-        produtos.filter(
-            p =>
-            Number(
-                p.estoque
-            ) <= 5
-        );
+    } catch (erro) {
 
-        let html = "";
-
-        baixos.forEach(
-            produto=>{
-
-            html += `
-            <tr>
-
-            <td>
-                ${produto.nome}
-            </td>
-
-            <td>
-                ${produto.estoque}
-            </td>
-
-            </tr>
-            `;
-
-        });
-
-        document
-        .getElementById(
-            "estoqueBaixo"
-        )
-        .innerHTML =
-        html;
-
-    }catch(err){
-
-        console.error(err);
+        console.error(erro);
 
     }
 
 }
 
 // =====================================
-// TOP PRODUTOS
+// LIMPAR FORM
 // =====================================
 
-async function carregarTopProdutos(){
+function limparCliente() {
 
-    if(
-        !existe(
-            "topProdutos"
+    existe(
+        "clienteId"
+    ).value = "";
+
+    existe(
+        "clienteNome"
+    ).value = "";
+
+    existe(
+        "clienteEmail"
+    ).value = "";
+
+    existe(
+        "clienteTelefone"
+    ).value = "";
+
+}
+
+// =====================================
+// PESQUISA
+// =====================================
+
+function pesquisarCliente() {
+
+    const texto =
+    existe(
+        "pesquisaCliente"
+    )
+    .value
+    .toLowerCase();
+
+    const filtrado =
+    clientesCache.filter(
+        cliente =>
+
+        (cliente.nome || "")
+        .toLowerCase()
+        .includes(texto)
+
+        ||
+
+        (cliente.email || "")
+        .toLowerCase()
+        .includes(texto)
+
+        ||
+
+        (cliente.telefone || "")
+        .toLowerCase()
+        .includes(texto)
+
+    );
+
+    renderizarClientes(
+        filtrado
+    );
+
+}
+
+// =====================================
+// ESTATÍSTICAS
+// =====================================
+
+function atualizarEstatisticasClientes() {
+
+    if (
+        existe(
+            "estatisticaClientes"
         )
-    ) return;
+    ) {
 
-    try{
-
-        const resposta =
-        await fetch(
-            "/relatorio/top-produtos"
-        );
-
-        const produtos =
-        await resposta.json();
-
-        let html = "";
-
-        produtos.forEach(
-            item=>{
-
-            html += `
-            <tr>
-
-            <td>
-                ${item.nome}
-            </td>
-
-            <td>
-                ${item.total}
-            </td>
-
-            </tr>
-            `;
-
-        });
-
-        document
-        .getElementById(
-            "topProdutos"
-        )
-        .innerHTML =
-        html;
-
-    }catch(err){
-
-        console.error(err);
+        existe(
+            "estatisticaClientes"
+        ).textContent =
+        clientesCache.length;
 
     }
 
 }
 
 // =====================================
-// INICIALIZAÇÃO
+// EVENTOS CLIENTES
 // =====================================
 
 document.addEventListener(
 "DOMContentLoaded",
-()=>{
+() => {
 
-    verificarSessao();
+    if (
+        existe(
+            "btnSalvarCliente"
+        )
+    ) {
 
-    carregarDashboard();
+        existe(
+            "btnSalvarCliente"
+        )
+        .addEventListener(
+            "click",
+            salvarCliente
+        );
 
-    carregarEstoqueBaixo();
+    }
 
-    carregarTopProdutos();
+    if (
+        existe(
+            "btnCancelarCliente"
+        )
+    ) {
+
+        existe(
+            "btnCancelarCliente"
+        )
+        .addEventListener(
+            "click",
+            limparCliente
+        );
+
+    }
+
+    if (
+        existe(
+            "pesquisaCliente"
+        )
+    ) {
+
+        existe(
+            "pesquisaCliente"
+        )
+        .addEventListener(
+            "keyup",
+            pesquisarCliente
+        );
+
+    }
+
+    carregarClientes();
 
 });// =====================================
 // PRODUTOS
@@ -845,11 +714,12 @@ let produtosCache = [];
 // CARREGAR PRODUTOS
 // =====================================
 
-async function carregarProdutos(){
+async function carregarProdutos() {
 
-    if(!existe("tabelaProdutos")) return;
+    if (!existe("tabelaProdutos"))
+        return;
 
-    try{
+    try {
 
         const resposta =
         await fetch("/produtos");
@@ -865,11 +735,11 @@ async function carregarProdutos(){
 
         atualizarTabelaEstoqueBaixo();
 
-    }catch(err){
+    } catch (erro) {
 
         console.error(
             "Erro produtos:",
-            err
+            erro
         );
 
     }
@@ -880,21 +750,18 @@ async function carregarProdutos(){
 // RENDERIZAR PRODUTOS
 // =====================================
 
-function renderizarProdutos(lista){
+function renderizarProdutos(lista) {
 
     let html = "";
 
-    lista.forEach(produto=>{
+    lista.forEach(produto => {
 
         html += `
         <tr>
 
             <td>
                 <img
-                src="${
-                    produto.imagem ||
-                    'https://via.placeholder.com/70'
-                }"
+                src="${produto.imagem || 'https://via.placeholder.com/70'}"
                 class="produto-img"
                 onerror="this.src='https://via.placeholder.com/70'">
             </td>
@@ -903,13 +770,9 @@ function renderizarProdutos(lista){
 
             <td>${produto.categoria}</td>
 
-            <td>
-                ${dinheiro(produto.preco)}
-            </td>
+            <td>${dinheiro(produto.preco)}</td>
 
-            <td>
-                ${produto.estoque}
-            </td>
+            <td>${produto.estoque}</td>
 
             <td>
 
@@ -932,11 +795,9 @@ function renderizarProdutos(lista){
 
     });
 
-    document
-    .getElementById(
+    existe(
         "tabelaProdutos"
-    )
-    .innerHTML = html;
+    ).innerHTML = html;
 
 }
 
@@ -944,7 +805,7 @@ function renderizarProdutos(lista){
 // SALVAR PRODUTO
 // =====================================
 
-async function salvarProduto(){
+async function salvarProduto() {
 
     const id =
     existe("produtoId").value;
@@ -977,7 +838,7 @@ async function salvarProduto(){
 
     };
 
-    if(!dados.nome){
+    if (!dados.nome) {
 
         alert(
             "Informe o nome do produto."
@@ -987,15 +848,15 @@ async function salvarProduto(){
 
     }
 
-    try{
+    try {
 
-        if(id){
+        if (id) {
 
             await fetch(
                 "/produtos/" + id,
                 {
-                    method:"PUT",
-                    headers:{
+                    method: "PUT",
+                    headers: {
                         "Content-Type":
                         "application/json"
                     },
@@ -1006,13 +867,13 @@ async function salvarProduto(){
                 }
             );
 
-        }else{
+        } else {
 
             await fetch(
                 "/produtos",
                 {
-                    method:"POST",
-                    headers:{
+                    method: "POST",
+                    headers: {
                         "Content-Type":
                         "application/json"
                     },
@@ -1029,9 +890,9 @@ async function salvarProduto(){
 
         carregarProdutos();
 
-    }catch(err){
+    } catch (erro) {
 
-        console.error(err);
+        console.error(erro);
 
         alert(
             "Erro ao salvar produto."
@@ -1045,48 +906,36 @@ async function salvarProduto(){
 // EDITAR PRODUTO
 // =====================================
 
-function editarProduto(id){
+function editarProduto(id) {
 
     const produto =
     produtosCache.find(
         p => p.id == id
     );
 
-    if(!produto) return;
+    if (!produto) return;
 
-    existe(
-        "produtoId"
-    ).value =
-    produto.id;
+    existe("produtoId")
+    .value = produto.id;
 
-    existe(
-        "produtoNome"
-    ).value =
-    produto.nome;
+    existe("produtoNome")
+    .value = produto.nome;
 
-    existe(
-        "produtoCategoria"
-    ).value =
-    produto.categoria;
+    existe("produtoCategoria")
+    .value = produto.categoria;
 
-    existe(
-        "produtoPreco"
-    ).value =
-    produto.preco;
+    existe("produtoPreco")
+    .value = produto.preco;
 
-    existe(
-        "produtoEstoque"
-    ).value =
-    produto.estoque;
+    existe("produtoEstoque")
+    .value = produto.estoque;
 
-    existe(
-        "produtoImagem"
-    ).value =
-    produto.imagem || "";
+    existe("produtoImagem")
+    .value = produto.imagem || "";
 
     window.scrollTo({
-        top:0,
-        behavior:"smooth"
+        top: 0,
+        behavior: "smooth"
     });
 
 }
@@ -1095,29 +944,30 @@ function editarProduto(id){
 // EXCLUIR PRODUTO
 // =====================================
 
-async function excluirProduto(id){
+async function excluirProduto(id) {
 
     const confirmar =
     confirm(
         "Deseja excluir este produto?"
     );
 
-    if(!confirmar) return;
+    if (!confirmar)
+        return;
 
-    try{
+    try {
 
         await fetch(
             "/produtos/" + id,
             {
-                method:"DELETE"
+                method: "DELETE"
             }
         );
 
         carregarProdutos();
 
-    }catch(err){
+    } catch (erro) {
 
-        console.error(err);
+        console.error(erro);
 
     }
 
@@ -1127,31 +977,14 @@ async function excluirProduto(id){
 // LIMPAR FORM
 // =====================================
 
-function limparProduto(){
+function limparProduto() {
 
-    existe(
-        "produtoId"
-    ).value = "";
-
-    existe(
-        "produtoNome"
-    ).value = "";
-
-    existe(
-        "produtoCategoria"
-    ).value = "";
-
-    existe(
-        "produtoPreco"
-    ).value = "";
-
-    existe(
-        "produtoEstoque"
-    ).value = "";
-
-    existe(
-        "produtoImagem"
-    ).value = "";
+    existe("produtoId").value = "";
+    existe("produtoNome").value = "";
+    existe("produtoCategoria").value = "";
+    existe("produtoPreco").value = "";
+    existe("produtoEstoque").value = "";
+    existe("produtoImagem").value = "";
 
 }
 
@@ -1159,12 +992,10 @@ function limparProduto(){
 // PESQUISA
 // =====================================
 
-function pesquisarProduto(){
+function pesquisarProduto() {
 
     const texto =
-    existe(
-        "pesquisaProduto"
-    )
+    existe("pesquisaProduto")
     .value
     .toLowerCase();
 
@@ -1194,9 +1025,9 @@ function pesquisarProduto(){
 // ESTOQUE BAIXO
 // =====================================
 
-function atualizarTabelaEstoqueBaixo(){
+function atualizarTabelaEstoqueBaixo() {
 
-    if(
+    if (
         !existe(
             "tabelaEstoqueBaixo"
         )
@@ -1205,36 +1036,25 @@ function atualizarTabelaEstoqueBaixo(){
     const baixos =
     produtosCache.filter(
         produto =>
-        Number(
-            produto.estoque
-        ) <= 5
+        Number(produto.estoque) <= 5
     );
 
     let html = "";
 
-    baixos.forEach(produto=>{
+    baixos.forEach(produto => {
 
         html += `
         <tr>
-
-            <td>
-                ${produto.nome}
-            </td>
-
-            <td>
-                ${produto.estoque}
-            </td>
-
+            <td>${produto.nome}</td>
+            <td>${produto.estoque}</td>
         </tr>
         `;
 
     });
 
-    document
-    .getElementById(
+    existe(
         "tabelaEstoqueBaixo"
-    )
-    .innerHTML = html;
+    ).innerHTML = html;
 
 }
 
@@ -1242,43 +1062,37 @@ function atualizarTabelaEstoqueBaixo(){
 // ESTATÍSTICAS
 // =====================================
 
-function atualizarEstatisticasProdutos(){
+function atualizarEstatisticasProdutos() {
 
-    if(
+    if (
         existe(
             "estatisticaProdutos"
         )
-    ){
+    ) {
 
-        document
-        .getElementById(
+        existe(
             "estatisticaProdutos"
-        )
-        .textContent =
+        ).textContent =
         produtosCache.length;
 
     }
 
-    if(
+    if (
         existe(
             "estatisticaEstoqueBaixo"
         )
-    ){
+    ) {
 
-        const totalBaixo =
+        const total =
         produtosCache.filter(
             produto =>
-            Number(
-                produto.estoque
-            ) <= 5
+            Number(produto.estoque) <= 5
         ).length;
 
-        document
-        .getElementById(
+        existe(
             "estatisticaEstoqueBaixo"
-        )
-        .textContent =
-        totalBaixo;
+        ).textContent =
+        total;
 
     }
 
@@ -1290,17 +1104,11 @@ function atualizarEstatisticasProdutos(){
 
 document.addEventListener(
 "DOMContentLoaded",
-()=>{
+() => {
 
-    if(
-        existe(
-            "btnSalvarProduto"
-        )
-    ){
+    if (existe("btnSalvarProduto")) {
 
-        existe(
-            "btnSalvarProduto"
-        )
+        existe("btnSalvarProduto")
         .addEventListener(
             "click",
             salvarProduto
@@ -1308,15 +1116,9 @@ document.addEventListener(
 
     }
 
-    if(
-        existe(
-            "btnCancelarProduto"
-        )
-    ){
+    if (existe("btnCancelarProduto")) {
 
-        existe(
-            "btnCancelarProduto"
-        )
+        existe("btnCancelarProduto")
         .addEventListener(
             "click",
             limparProduto
@@ -1324,15 +1126,9 @@ document.addEventListener(
 
     }
 
-    if(
-        existe(
-            "pesquisaProduto"
-        )
-    ){
+    if (existe("pesquisaProduto")) {
 
-        existe(
-            "pesquisaProduto"
-        )
+        existe("pesquisaProduto")
         .addEventListener(
             "keyup",
             pesquisarProduto
@@ -1343,7 +1139,7 @@ document.addEventListener(
     carregarProdutos();
 
 });// =====================================
-// VENDAS E CARRINHO
+// VENDAS
 // PARTE 4
 // =====================================
 
@@ -1352,14 +1148,15 @@ let clientesVenda = [];
 let produtosVenda = [];
 
 // =====================================
-// CARREGAR DADOS DOS SELECTS
+// CARREGAR DADOS
 // =====================================
 
-async function carregarDadosVenda(){
+async function carregarDadosVenda() {
 
-    if(!existe("vendaCliente")) return;
+    if (!existe("vendaCliente"))
+        return;
 
-    try{
+    try {
 
         const clientesResp =
         await fetch("/clientes");
@@ -1374,14 +1171,13 @@ async function carregarDadosVenda(){
         await produtosResp.json();
 
         preencherClientesVenda();
-
         preencherProdutosVenda();
 
-    }catch(err){
+    } catch (erro) {
 
         console.error(
-            "Erro ao carregar venda:",
-            err
+            "Erro venda:",
+            erro
         );
 
     }
@@ -1389,20 +1185,20 @@ async function carregarDadosVenda(){
 }
 
 // =====================================
-// CLIENTES
+// CLIENTES SELECT
 // =====================================
 
-function preencherClientesVenda(){
+function preencherClientesVenda() {
 
     const select =
     existe("vendaCliente");
 
-    if(!select) return;
+    if (!select) return;
 
     let html =
     `<option value="">Selecione um cliente</option>`;
 
-    clientesVenda.forEach(cliente=>{
+    clientesVenda.forEach(cliente => {
 
         html += `
         <option value="${cliente.id}">
@@ -1417,20 +1213,20 @@ function preencherClientesVenda(){
 }
 
 // =====================================
-// PRODUTOS
+// PRODUTOS SELECT
 // =====================================
 
-function preencherProdutosVenda(){
+function preencherProdutosVenda() {
 
     const select =
     existe("vendaProduto");
 
-    if(!select) return;
+    if (!select) return;
 
     let html =
     `<option value="">Selecione um produto</option>`;
 
-    produtosVenda.forEach(produto=>{
+    produtosVenda.forEach(produto => {
 
         html += `
         <option value="${produto.id}">
@@ -1446,10 +1242,10 @@ function preencherProdutosVenda(){
 }
 
 // =====================================
-// ADICIONAR AO CARRINHO
+// ADICIONAR CARRINHO
 // =====================================
 
-function adicionarCarrinho(){
+function adicionarCarrinho() {
 
     const produtoId =
     Number(
@@ -1461,7 +1257,7 @@ function adicionarCarrinho(){
         existe("vendaQuantidade").value
     );
 
-    if(!produtoId){
+    if (!produtoId) {
 
         alert(
             "Selecione um produto."
@@ -1471,9 +1267,7 @@ function adicionarCarrinho(){
 
     }
 
-    if(
-        quantidade <= 0
-    ){
+    if (quantidade <= 0) {
 
         alert(
             "Quantidade inválida."
@@ -1488,7 +1282,20 @@ function adicionarCarrinho(){
         p => p.id === produtoId
     );
 
-    if(!produto) return;
+    if (!produto) return;
+
+    if (
+        quantidade >
+        Number(produto.estoque)
+    ) {
+
+        alert(
+            "Estoque insuficiente."
+        );
+
+        return;
+
+    }
 
     const existente =
     carrinho.find(
@@ -1496,12 +1303,12 @@ function adicionarCarrinho(){
         item.produto_id === produto.id
     );
 
-    if(existente){
+    if (existente) {
 
         existente.quantidade +=
         quantidade;
 
-    }else{
+    } else {
 
         carrinho.push({
 
@@ -1512,9 +1319,7 @@ function adicionarCarrinho(){
             produto.nome,
 
             preco:
-            Number(
-                produto.preco
-            ),
+            Number(produto.preco),
 
             quantidade
 
@@ -1530,7 +1335,7 @@ function adicionarCarrinho(){
 // REMOVER ITEM
 // =====================================
 
-function removerCarrinho(id){
+function removerCarrinho(id) {
 
     carrinho =
     carrinho.filter(
@@ -1546,7 +1351,7 @@ function removerCarrinho(id){
 // LIMPAR CARRINHO
 // =====================================
 
-function limparCarrinho(){
+function limparCarrinho() {
 
     carrinho = [];
 
@@ -1558,10 +1363,10 @@ function limparCarrinho(){
 // TOTAL
 // =====================================
 
-function calcularTotal(){
+function calcularTotal() {
 
     return carrinho.reduce(
-        (soma,item)=>
+        (soma, item) =>
 
         soma +
 
@@ -1579,30 +1384,24 @@ function calcularTotal(){
 // RENDERIZAR
 // =====================================
 
-function renderizarCarrinho(){
+function renderizarCarrinho() {
 
     const tabela =
-    existe(
-        "tabelaCarrinho"
-    );
+    existe("tabelaCarrinho");
 
-    if(!tabela) return;
+    if (!tabela) return;
 
     let html = "";
 
-    carrinho.forEach(item=>{
+    carrinho.forEach(item => {
 
         html += `
         <tr>
 
-            <td>
-                ${item.nome}
-            </td>
+            <td>${item.nome}</td>
 
             <td>
-                ${dinheiro(
-                    item.preco
-                )}
+                ${dinheiro(item.preco)}
             </td>
 
             <td>
@@ -1620,13 +1419,8 @@ function renderizarCarrinho(){
 
                 <button
                 class="btn-danger"
-                onclick="
-                removerCarrinho(
-                ${item.produto_id}
-                )">
-
+                onclick="removerCarrinho(${item.produto_id})">
                 Remover
-
                 </button>
 
             </td>
@@ -1641,11 +1435,9 @@ function renderizarCarrinho(){
     const total =
     calcularTotal();
 
-    if(
-        existe(
-            "totalCarrinho"
-        )
-    ){
+    if (
+        existe("totalCarrinho")
+    ) {
 
         existe(
             "totalCarrinho"
@@ -1655,11 +1447,11 @@ function renderizarCarrinho(){
 
     }
 
-    if(
+    if (
         existe(
             "estatisticaItensCarrinho"
         )
-    ){
+    ) {
 
         existe(
             "estatisticaItensCarrinho"
@@ -1668,11 +1460,11 @@ function renderizarCarrinho(){
 
     }
 
-    if(
+    if (
         existe(
             "estatisticaValorCarrinho"
         )
-    ){
+    ) {
 
         existe(
             "estatisticaValorCarrinho"
@@ -1687,16 +1479,14 @@ function renderizarCarrinho(){
 // FINALIZAR VENDA
 // =====================================
 
-async function finalizarVenda(){
+async function finalizarVenda() {
 
     const cliente_id =
     Number(
-        existe(
-            "vendaCliente"
-        ).value
+        existe("vendaCliente").value
     );
 
-    if(!cliente_id){
+    if (!cliente_id) {
 
         alert(
             "Selecione um cliente."
@@ -1706,9 +1496,9 @@ async function finalizarVenda(){
 
     }
 
-    if(
+    if (
         carrinho.length === 0
-    ){
+    ) {
 
         alert(
             "Carrinho vazio."
@@ -1718,15 +1508,15 @@ async function finalizarVenda(){
 
     }
 
-    try{
+    try {
 
         const resposta =
         await fetch(
             "/vendas",
             {
-                method:"POST",
+                method: "POST",
 
-                headers:{
+                headers: {
                     "Content-Type":
                     "application/json"
                 },
@@ -1750,7 +1540,7 @@ async function finalizarVenda(){
         const dados =
         await resposta.json();
 
-        if(dados.success){
+        if (dados.success) {
 
             alert(
                 "Venda realizada com sucesso!"
@@ -1762,11 +1552,17 @@ async function finalizarVenda(){
 
             carregarDadosVenda();
 
+        } else {
+
+            alert(
+                "Erro ao registrar venda."
+            );
+
         }
 
-    }catch(err){
+    } catch (erro) {
 
-        console.error(err);
+        console.error(erro);
 
         alert(
             "Erro ao finalizar venda."
@@ -1777,18 +1573,18 @@ async function finalizarVenda(){
 }
 
 // =====================================
-// EVENTOS
+// EVENTOS VENDAS
 // =====================================
 
 document.addEventListener(
 "DOMContentLoaded",
-()=>{
+() => {
 
-    if(
+    if (
         existe(
             "btnAdicionarCarrinho"
         )
-    ){
+    ) {
 
         existe(
             "btnAdicionarCarrinho"
@@ -1800,11 +1596,11 @@ document.addEventListener(
 
     }
 
-    if(
+    if (
         existe(
             "btnLimparCarrinho"
         )
-    ){
+    ) {
 
         existe(
             "btnLimparCarrinho"
@@ -1816,11 +1612,11 @@ document.addEventListener(
 
     }
 
-    if(
+    if (
         existe(
             "btnFinalizarVenda"
         )
-    ){
+    ) {
 
         existe(
             "btnFinalizarVenda"
@@ -1835,7 +1631,7 @@ document.addEventListener(
     carregarDadosVenda();
 
 });// =====================================
-// CONSULTAS E RELATÓRIOS
+// CONSULTAS E HISTÓRICO
 // PARTE 5
 // =====================================
 
@@ -1845,12 +1641,12 @@ let vendasCache = [];
 // CARREGAR VENDAS
 // =====================================
 
-async function carregarConsultas(){
+async function carregarConsultas() {
 
-    if(!existe("tabelaConsultas"))
+    if (!existe("tabelaConsultas"))
         return;
 
-    try{
+    try {
 
         const resposta =
         await fetch("/vendas");
@@ -1862,13 +1658,13 @@ async function carregarConsultas(){
             vendasCache
         );
 
-        atualizarEstatisticasVendas();
+        atualizarEstatisticasConsultas();
 
-    }catch(err){
+    } catch (erro) {
 
         console.error(
             "Erro consultas:",
-            err
+            erro
         );
 
     }
@@ -1876,14 +1672,19 @@ async function carregarConsultas(){
 }
 
 // =====================================
-// RENDERIZAR TABELA
+// RENDERIZAR CONSULTAS
 // =====================================
 
-function renderizarConsultas(lista){
+function renderizarConsultas(lista) {
+
+    const tabela =
+    existe("tabelaConsultas");
+
+    if (!tabela) return;
 
     let html = "";
 
-    lista.forEach(venda=>{
+    lista.forEach(venda => {
 
         html += `
         <tr>
@@ -1891,16 +1692,13 @@ function renderizarConsultas(lista){
             <td>${venda.id}</td>
 
             <td>
-                ${venda.cliente_id || "-"}
-            </td>
-
-            <td>
                 ${dinheiro(venda.total)}
             </td>
 
             <td>
-                ${new Date(venda.data)
-                .toLocaleString("pt-BR")}
+                ${new Date(
+                    venda.data
+                ).toLocaleString("pt-BR")}
             </td>
 
             <td>
@@ -1908,7 +1706,7 @@ function renderizarConsultas(lista){
                 <button
                 class="btn-primary"
                 onclick="verDetalhesVenda(${venda.id})">
-                Detalhes
+                Ver Detalhes
                 </button>
 
             </td>
@@ -1918,9 +1716,85 @@ function renderizarConsultas(lista){
 
     });
 
-    existe(
-        "tabelaConsultas"
-    ).innerHTML = html;
+    tabela.innerHTML = html;
+
+}
+
+// =====================================
+// DETALHES DA VENDA
+// =====================================
+
+async function verDetalhesVenda(id) {
+
+    try {
+
+        const resposta =
+        await fetch(
+            "/vendas/" + id
+        );
+
+        const itens =
+        await resposta.json();
+
+        let texto =
+        `Venda #${id}\n\n`;
+
+        itens.forEach(item => {
+
+            texto +=
+            `${item.quantidade}x - Produto ${item.produto_id}\n`;
+
+        });
+
+        alert(texto);
+
+    } catch (erro) {
+
+        console.error(erro);
+
+    }
+
+}
+
+// =====================================
+// FILTRO POR DATA
+// =====================================
+
+async function filtrarVendas() {
+
+    const inicio =
+    existe("dataInicio")?.value;
+
+    const fim =
+    existe("dataFim")?.value;
+
+    if (!inicio || !fim) {
+
+        carregarConsultas();
+
+        return;
+
+    }
+
+    try {
+
+        const resposta =
+        await fetch(
+            `/vendas/filtro?inicio=${inicio}&fim=${fim}`
+        );
+
+        const dados =
+        await resposta.json();
+
+        renderizarConsultas(
+            dados
+        );
+
+    } catch (erro) {
+
+        console.error(erro);
+
+    }
 
 }
 
@@ -1928,36 +1802,31 @@ function renderizarConsultas(lista){
 // ESTATÍSTICAS
 // =====================================
 
-function atualizarEstatisticasVendas(){
+function atualizarEstatisticasConsultas() {
 
-    if(
+    if (
         existe(
-            "estatisticaVendas"
+            "estatisticaTotalVendas"
         )
-    ){
+    ) {
 
         existe(
-            "estatisticaVendas"
+            "estatisticaTotalVendas"
         ).textContent =
         vendasCache.length;
 
     }
 
-    if(
+    if (
         existe(
             "estatisticaFaturamento"
         )
-    ){
+    ) {
 
         const total =
         vendasCache.reduce(
-            (soma,venda)=>
-
-            soma +
-            Number(
-                venda.total
-            ),
-
+            (soma, venda) =>
+            soma + Number(venda.total),
             0
         );
 
@@ -1971,171 +1840,21 @@ function atualizarEstatisticasVendas(){
 }
 
 // =====================================
-// FILTRO
-// =====================================
-
-function filtrarVendas(){
-
-    const inicio =
-    existe(
-        "filtroInicio"
-    ).value;
-
-    const fim =
-    existe(
-        "filtroFim"
-    ).value;
-
-    if(!inicio || !fim){
-
-        renderizarConsultas(
-            vendasCache
-        );
-
-        return;
-
-    }
-
-    const filtrado =
-    vendasCache.filter(
-        venda=>{
-
-        const data =
-        venda.data
-        .substring(0,10);
-
-        return (
-            data >= inicio &&
-            data <= fim
-        );
-
-    });
-
-    renderizarConsultas(
-        filtrado
-    );
-
-}
-
-// =====================================
-// DETALHES
-// =====================================
-
-async function verDetalhesVenda(id){
-
-    try{
-
-        const resposta =
-        await fetch(
-            "/vendas/" + id
-        );
-
-        const itens =
-        await resposta.json();
-
-        let html =
-        `
-        <table>
-
-        <thead>
-
-        <tr>
-
-        <th>Produto</th>
-        <th>Qtd</th>
-        <th>Preço</th>
-
-        </tr>
-
-        </thead>
-
-        <tbody>
-        `;
-
-        itens.forEach(item=>{
-
-            html += `
-            <tr>
-
-            <td>
-            ${item.produto_id}
-            </td>
-
-            <td>
-            ${item.quantidade}
-            </td>
-
-            <td>
-            ${dinheiro(
-                item.preco
-            )}
-            </td>
-
-            </tr>
-            `;
-
-        });
-
-        html += `
-        </tbody>
-        </table>
-        `;
-
-        existe(
-            "detalhesVenda"
-        ).innerHTML =
-        html;
-
-        existe(
-            "modalVenda"
-        ).style.display =
-        "flex";
-
-    }catch(err){
-
-        console.error(err);
-
-    }
-
-}
-
-// =====================================
-// FECHAR MODAL
-// =====================================
-
-function fecharModal(){
-
-    if(
-        existe(
-            "modalVenda"
-        )
-    ){
-
-        existe(
-            "modalVenda"
-        ).style.display =
-        "none";
-
-    }
-
-}
-
-// =====================================
 // EVENTOS CONSULTAS
 // =====================================
 
 document.addEventListener(
 "DOMContentLoaded",
-()=>{
+() => {
 
-    if(
+    if (
         existe(
-            "btnFiltrarVendas"
+            "btnFiltrar"
         )
-    ){
+    ) {
 
         existe(
-            "btnFiltrarVendas"
+            "btnFiltrar"
         )
         .addEventListener(
             "click",
@@ -2144,22 +1863,11 @@ document.addEventListener(
 
     }
 
-    if(
-        existe(
-            "fecharModal"
-        )
-    ){
-
-        existe(
-            "fecharModal"
-        )
-        .addEventListener(
-            "click",
-            fecharModal
-        );
-
-    }
-
     carregarConsultas();
 
 });
+
+// =====================================
+// FIM DO SCRIPT
+// SPORT+ PRO 2.1
+// =====================================
